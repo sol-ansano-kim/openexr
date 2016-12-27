@@ -21,3 +21,12 @@ missing
 .DS_Store
 *.project
 *.cproject
+
+*.dblite
+/.build
+/release
+/debug
+config.status
+excons.cache
+IlmBase/Half/eLut.h
+IlmBase/Half/toFloat.h
