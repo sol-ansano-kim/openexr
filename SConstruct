@@ -205,7 +205,11 @@ def GenerateHeader(target, source, env):
 env = excons.MakeBaseEnv()
 
 if sys.platform != "win32":
-   env.Append(CPPFLAGS=" -Wno-unused-variable -Wno-unused-parameter -Wno-unused-private-field")
+   env.Append(CPPFLAGS=" -Wno-unused-variable -Wno-unused-parameter")
+   if sys.platform == "darwin":
+      env.Append(CPPFLAGS=" -Wno-unused-private-field")
+   else:
+      env.Append(CPPFLAGS=" -Wno-unused-but-set-variable")
 
 env["BUILDERS"]["GenerateHeader"] = Builder(action=GenerateHeader, suffix=".h")
 
@@ -363,7 +367,8 @@ prjs = [
       "srcs": ["OpenEXR/IlmImf/b44ExpLogTable.cpp"],
       "staticlibs": ["IlmThread" + static_lib_suffix,
                      "Iex" + static_lib_suffix,
-                     "Half" + static_lib_suffix]
+                     "Half" + static_lib_suffix],
+      "custom": [threads.Require]
    },
    {
       "name": "dwaLookups",
@@ -372,7 +377,8 @@ prjs = [
       "srcs": ["OpenEXR/IlmImf/dwaLookups.cpp"],
       "staticlibs": ["IlmThread" + static_lib_suffix,
                      "Iex" + static_lib_suffix,
-                     "Half" + static_lib_suffix]
+                     "Half" + static_lib_suffix],
+      "custom": [threads.Require]
    },
    {
       "name": "IlmImf" + static_lib_suffix,
