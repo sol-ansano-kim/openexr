@@ -272,7 +272,7 @@ prjs = [
       "type": "program",
       "srcs": ["IlmBase/Half/toFloat.cpp"]
    },
-   # Hald
+   # Half
    {
       "name": "Half" + static_lib_suffix,
       "type": "staticlib",
@@ -519,7 +519,9 @@ if not lib_suffix:
    prjs[17]["soname"] = "libIlmImfUtil.so.2"
    prjs[17]["install_name"] = "libIlmImfUtil.2.dylib"
 
+
 tgts = excons.DeclareTargets(env, prjs)
+
 
 env.Alias("libs", ["half_static", "half_shared",
                    "iex_static", "iex_shared",
