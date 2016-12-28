@@ -26,7 +26,12 @@ missing
 /.build
 /release
 /debug
-config.status
+/.sconf_temp
+*config.status
+config.log
 excons.cache
 IlmBase/Half/eLut.h
 IlmBase/Half/toFloat.h
+OpenEXR/IlmImf/b44ExpLogTable.h
+OpenEXR/IlmImf/dwaLookups.h
+
