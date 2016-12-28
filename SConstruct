@@ -198,7 +198,8 @@ def GenerateHeader(target, source, env):
    p = subprocess.Popen([str(source[0])], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
    out, _ = p.communicate()
    with open(str(target[0]), "w") as f:
-      f.write(out)
+      for l in out.split("\r\n"):
+         f.write(l+"\n")
    return None
 
 
@@ -210,6 +211,8 @@ if sys.platform != "win32":
       env.Append(CPPFLAGS=" -Wno-unused-private-field")
    else:
       env.Append(CPPFLAGS=" -Wno-unused-but-set-variable")
+else:
+   env.Append(CPPDEFINES=["_CRT_SECURE_NO_WARNINGS"])
 
 env["BUILDERS"]["GenerateHeader"] = Builder(action=GenerateHeader, suffix=".h")
 
@@ -220,13 +223,15 @@ if conf.TryCompile(_sc_nprocessors_onln_check_src, ".cpp"):
    have_sysconf_nprocessors_onln = True
 conf.Finish()
 
-env.GenerateHeader("IlmBase/Half/eLut.h", File("%s/bin/eLut" % excons.OutputBaseDirectory()))
+binext = ("" if sys.platform != "win32" else ".exe")
 
-env.GenerateHeader("IlmBase/Half/toFloat.h", File("%s/bin/toFloat" % excons.OutputBaseDirectory()))
+env.GenerateHeader("IlmBase/Half/eLut.h", File("%s/bin/eLut%s" % (excons.OutputBaseDirectory(), binext)))
 
-env.GenerateHeader("OpenEXR/IlmImf/b44ExpLogTable.h", File("%s/bin/b44ExpLogTable" % excons.OutputBaseDirectory()))
+env.GenerateHeader("IlmBase/Half/toFloat.h", File("%s/bin/toFloat%s" % (excons.OutputBaseDirectory(), binext)))
 
-env.GenerateHeader("OpenEXR/IlmImf/dwaLookups.h", File("%s/bin/dwaLookups" % excons.OutputBaseDirectory()))
+env.GenerateHeader("OpenEXR/IlmImf/b44ExpLogTable.h", File("%s/bin/b44ExpLogTable%s" % (excons.OutputBaseDirectory(), binext)))
+
+env.GenerateHeader("OpenEXR/IlmImf/dwaLookups.h", File("%s/bin/dwaLookups%s" % (excons.OutputBaseDirectory(), binext)))
 
 out_headers_dir = "%s/include/OpenEXR" % excons.OutputBaseDirectory()
 
@@ -386,7 +391,8 @@ prjs = [
       "alias": "ilmimf_static",
       "defs": openexr_defs,
       "incdirs": [out_headers_dir],
-      "srcs": ilmimf_srcs
+      "srcs": ilmimf_srcs,
+      "custom": [zlib.Require]
    },
    {
       "name": "IlmImf" + lib_suffix,
@@ -408,7 +414,8 @@ prjs = [
       "alias": "ilmimfutil_static",
       "defs": openexr_defs,
       "incdirs": [out_headers_dir],
-      "srcs": glob.glob("OpenEXR/IlmImfUtil/*.cpp")
+      "srcs": glob.glob("OpenEXR/IlmImfUtil/*.cpp"),
+      "custom": [zlib.Require]
    },
    {
       "name": "IlmImfUtil" + lib_suffix,
