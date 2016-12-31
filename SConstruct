@@ -6,6 +6,8 @@ import subprocess
 import excons
 import excons.tools.zlib as zlib
 import excons.tools.threads as threads
+import excons.tools.python as python
+import excons.tools.boost as boost
 
 
 lib_version = (2, 2, 0)
@@ -270,6 +272,18 @@ ilmimf_srcs = filter(ilmimf_filter, glob.glob("OpenEXR/IlmImf/*.cpp"))
 
 ilmimfutil_headers = env.Install(out_headers_dir, glob.glob("OpenEXR/IlmImfUtil/*.h"))
 
+pyiex_headers = env.Install(out_headers_dir, glob.glob("PyIlmBase/PyIex/*.h"))
+
+pyimath_headers = env.Install(out_headers_dir, glob.glob("PyIlmBase/PyImath/*.h"))
+
+def pyimath_filter(x):
+   name = os.path.splitext(os.path.basename(x))[0]
+   return (name not in ["imathmodule", "PyImathFun", "PyImathBasicTypes", "PyImathM44Array"])
+
+pyimath_all_srcs = glob.glob("PyIlmBase/PyImath/*.cpp")
+
+pyimath_srcs = filter(pyimath_filter, pyimath_all_srcs)
+
 prjs = [
    {
       "name": "eLut",
@@ -430,6 +444,33 @@ prjs = [
                "Iex" + lib_suffix,
                "Half" + lib_suffix],
       "custom": [threads.Require, zlib.Require]
+   },
+   # Python
+   {
+      "name": "PyIex" + lib_suffix,
+      "type": "sharedlib",
+      "alias": "pyiex",
+      "prefix": "python/" + python.Version(),
+      "bldprefix": "python" + python.Version(),
+      "defs": (["OPENEXR_DLL"] if sys.platform == "win32" else []),
+      "incdirs": [out_headers_dir, "PyIlmBase/PyIex"],
+      "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
+      #"libs": ["Iex" + lib_suffix],
+      "custom": [python.SoftRequire]
+   },
+   {
+      "name": "PyImath" + lib_suffix,
+      "type": "sharedlib",
+      "alias": "pyimath",
+      "prefix": "python/" + python.Version(),
+      "bldprefix": "python" + python.Version(),
+      "defs": (["OPENEXR_DLL"] if sys.platform == "win32" else []),
+      "incdirs": [out_headers_dir, "PyIlmBase/PyImath"],
+      "srcs": pyimath_srcs,
+      "libs": ["Iex" + lib_suffix,
+               "IexMath" + lib_suffix,
+               "Imath" + lib_suffix],
+      "custom": [python.SoftRequire, boost.Require(libs=["python"])]
    },
    # tests
    {
