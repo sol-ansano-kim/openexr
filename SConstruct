@@ -302,6 +302,7 @@ prjs = [
       "name": "Half" + static_lib_suffix,
       "type": "staticlib",
       "alias": "half_static",
+      "symvis": "default",
       "incdirs": [out_headers_dir],
       "srcs": ["IlmBase/Half/half.cpp"]
    },
@@ -318,6 +319,7 @@ prjs = [
       "name": "Iex" + static_lib_suffix,
       "type": "staticlib",
       "alias": "iex_static",
+      "symvis": "default",
       "incdirs": [out_headers_dir],
       "srcs": glob.glob("IlmBase/Iex/*.cpp")
    },
@@ -334,6 +336,7 @@ prjs = [
       "name": "IexMath" + static_lib_suffix,
       "type": "staticlib",
       "alias": "iexmath_static",
+      "symvis": "default",
       "incdirs": [out_headers_dir],
       "srcs": glob.glob("IlmBase/IexMath/*.cpp")
    },
@@ -351,6 +354,7 @@ prjs = [
       "name": "Imath" + static_lib_suffix,
       "type": "staticlib",
       "alias": "imath_static",
+      "symvis": "default",
       "incdirs": [out_headers_dir],
       "srcs": glob.glob("IlmBase/Imath/*.cpp")
    },
@@ -368,6 +372,7 @@ prjs = [
       "name": "IlmThread" + static_lib_suffix,
       "type": "staticlib",
       "alias": "ilmthread_static",
+      "symvis": "default",
       "incdirs": [out_headers_dir],
       "srcs": ilmthread_srcs
    },
@@ -405,6 +410,7 @@ prjs = [
       "name": "IlmImf" + static_lib_suffix,
       "type": "staticlib",
       "alias": "ilmimf_static",
+      "symvis": "default",
       "defs": openexr_defs,
       "incdirs": [out_headers_dir],
       "srcs": ilmimf_srcs,
@@ -428,6 +434,7 @@ prjs = [
       "name": "IlmImfUtil" + static_lib_suffix,
       "type": "staticlib",
       "alias": "ilmimfutil_static",
+      "symvis": "default",
       "defs": openexr_defs,
       "incdirs": [out_headers_dir],
       "srcs": glob.glob("OpenEXR/IlmImfUtil/*.cpp"),
