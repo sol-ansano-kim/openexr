@@ -457,11 +457,11 @@ BOOST_PYTHON_MODULE(imath)
     //
     // Register Exceptions
     //
-    PyIex::registerExc<IMATH_NAMESPACE::NullVecExc,IEX_NAMESPACE::MathExc>("NullVecExc","imath");
-    PyIex::registerExc<IMATH_NAMESPACE::NullQuatExc,IEX_NAMESPACE::MathExc>("NullQuatExc","imath");
-    PyIex::registerExc<IMATH_NAMESPACE::SingMatrixExc,IEX_NAMESPACE::MathExc>("SingMatrixExc","imath");
-    PyIex::registerExc<IMATH_NAMESPACE::ZeroScaleExc,IEX_NAMESPACE::MathExc>("ZeroScaleExc","imath");
-    PyIex::registerExc<IMATH_NAMESPACE::IntVecNormalizeExc,IEX_NAMESPACE::MathExc>("IntVecNormalizeExc","imath");
+    PyIex::registerExc<IMATH_NAMESPACE::NullVecExc,IEX_NAMESPACE::BaseExc>("NullVecExc","imath");
+    PyIex::registerExc<IMATH_NAMESPACE::NullQuatExc,IEX_NAMESPACE::BaseExc>("NullQuatExc","imath");
+    PyIex::registerExc<IMATH_NAMESPACE::SingMatrixExc,IEX_NAMESPACE::BaseExc>("SingMatrixExc","imath");
+    PyIex::registerExc<IMATH_NAMESPACE::ZeroScaleExc,IEX_NAMESPACE::BaseExc>("ZeroScaleExc","imath");
+    PyIex::registerExc<IMATH_NAMESPACE::IntVecNormalizeExc,IEX_NAMESPACE::BaseExc>("IntVecNormalizeExc","imath");
 
     def("computeBoundingBox", &computeBoundingBox<float>,
         "computeBoundingBox(position) -- computes the bounding box from the position array.");
