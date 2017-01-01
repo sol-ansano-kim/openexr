@@ -465,6 +465,7 @@ prjs = [
       "defs": ["PYIEX_EXPORTS"] + pydefs,
       "incdirs": [out_headers_dir],
       "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
+      "libs": ["Iex" + lib_suffix],
       "custom": [python.SoftRequire]
    },
    {
@@ -488,6 +489,7 @@ prjs = [
       "ext": python.ModuleExtension(),
       "prefix": python.ModulePrefix() + "/" + python.Version(),
       "bldprefix": "python" + python.Version(),
+      "symvis": "default",
       "rpaths": ["../.."],
       "defs": pydefs,
       "incdirs": [out_headers_dir],
@@ -503,6 +505,7 @@ prjs = [
       "ext": python.ModuleExtension(),
       "prefix": python.ModulePrefix() + "/" + python.Version(),
       "bldprefix": "python" + python.Version(),
+      "symvis": "default",
       "rpaths": ["../.."],
       "defs": pydefs,
       "incdirs": [out_headers_dir],
