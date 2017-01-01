@@ -284,6 +284,8 @@ pyimath_all_srcs = glob.glob("PyIlmBase/PyImath/*.cpp")
 
 pyimath_srcs = filter(pyimath_filter, pyimath_all_srcs)
 
+pydefs = (["OPENEXR_DLL"] if sys.platform == "win32" else ["PLATFORM_VISIBILITY_AVAILABLE"])
+
 prjs = [
    {
       "name": "eLut",
@@ -452,10 +454,10 @@ prjs = [
       "alias": "pyiex",
       "prefix": "python/" + python.Version(),
       "bldprefix": "python" + python.Version(),
-      "defs": (["OPENEXR_DLL"] if sys.platform == "win32" else []),
-      "incdirs": [out_headers_dir, "PyIlmBase/PyIex"],
+      "rpaths": ["../.."],
+      "defs": ["PYIEX_EXPORTS"] + pydefs,
+      "incdirs": [out_headers_dir],
       "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
-      #"libs": ["Iex" + lib_suffix],
       "custom": [python.SoftRequire]
    },
    {
@@ -464,13 +466,49 @@ prjs = [
       "alias": "pyimath",
       "prefix": "python/" + python.Version(),
       "bldprefix": "python" + python.Version(),
-      "defs": (["OPENEXR_DLL"] if sys.platform == "win32" else []),
-      "incdirs": [out_headers_dir, "PyIlmBase/PyImath"],
+      "rpaths": ["../.."],
+      "defs": ["PYIMATH_EXPORTS"] + pydefs,
+      "incdirs": [out_headers_dir],
       "srcs": pyimath_srcs,
       "libs": ["Iex" + lib_suffix,
                "IexMath" + lib_suffix,
                "Imath" + lib_suffix],
       "custom": [python.SoftRequire, boost.Require(libs=["python"])]
+   },
+   {
+      "name": "iexmodule",
+      "type": "dynamicmodule",
+      "ext": python.ModuleExtension(),
+      "prefix": python.ModulePrefix() + "/" + python.Version(),
+      "bldprefix": "python" + python.Version(),
+      "rpaths": ["../.."],
+      "defs": pydefs,
+      "incdirs": [out_headers_dir],
+      "srcs": ["PyIlmBase/PyIex/iexmodule.cpp"],
+      "libdirs": [excons.OutputBaseDirectory() + "/lib/python/" + python.Version()],
+      "libs": ["PyIex" + lib_suffix,
+               "Iex" + lib_suffix],
+      "custom": [python.SoftRequire, boost.Require(libs=["python"])],
+   },
+   {
+      "name": "imathmodule",
+      "type": "dynamicmodule",
+      "ext": python.ModuleExtension(),
+      "prefix": python.ModulePrefix() + "/" + python.Version(),
+      "bldprefix": "python" + python.Version(),
+      "rpaths": ["../.."],
+      "defs": pydefs,
+      "incdirs": [out_headers_dir],
+      "srcs": ["PyIlmBase/PyImath/imathmodule.cpp",
+               "PyIlmBase/PyImath/PyImathFun.cpp",
+               "PyIlmBase/PyImath/PyImathBasicTypes.cpp"],
+      "libdirs": [excons.OutputBaseDirectory() + "/lib/python/" + python.Version()],
+      "libs": ["PyImath" + lib_suffix,
+               "PyIex" + lib_suffix,
+               "IexMath" + lib_suffix,
+               "Imath" + lib_suffix,
+               "Iex" + lib_suffix],
+      "custom": [python.SoftRequire, boost.Require(libs=["python"])],
    },
    # tests
    {
@@ -573,6 +611,14 @@ if not lib_suffix:
    prjs[17]["soname"] = "libIlmImfUtil.so.2"
    prjs[17]["install_name"] = "libIlmImfUtil.2.dylib"
 
+   prjs[18]["version"] = "2.2.0"
+   prjs[18]["soname"] = "libPyIex.so.2"
+   prjs[18]["install_name"] = "libPyIex.2.dylib"
+
+   prjs[19]["version"] = "2.2.0"
+   prjs[19]["soname"] = "libPyImath.so.2"
+   prjs[19]["install_name"] = "libPyImath.2.dylib"
+
 
 tgts = excons.DeclareTargets(env, prjs)
 
@@ -621,6 +667,11 @@ env.Alias("sharedlibs", ["half_shared",
                          ilmthread_headers +
                          ilmimf_headers,
                          ilmimfutil_headers)
+
+env.Alias("python", ["pyiex",
+                     "pyimath",
+                     "iexmodule",
+                     "imathmodule"])
 
 env.Alias("tests", ["HalfTest",
                     "IexTest",
