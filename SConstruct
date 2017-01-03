@@ -284,7 +284,7 @@ pyimath_all_srcs = glob.glob("PyIlmBase/PyImath/*.cpp")
 
 pyimath_srcs = filter(pyimath_filter, pyimath_all_srcs)
 
-pydefs = (["OPENEXR_DLL"] if sys.platform == "win32" else ["PLATFORM_VISIBILITY_AVAILABLE"])
+pydefs = (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else ["PLATFORM_VISIBILITY_AVAILABLE"])
 
 prjs = [
    {
@@ -456,31 +456,27 @@ prjs = [
    },
    # Python
    {
-      "name": "PyIex" + lib_suffix,
-      "type": "sharedlib",
+      "name": "PyIex" + static_lib_suffix,
+      "type": "staticlib",
+      "symvis": "default",
       "alias": "pyiex",
       "prefix": "python/" + python.Version(),
       "bldprefix": "python" + python.Version(),
-      "rpaths": ["../.."],
       "defs": ["PYIEX_EXPORTS"] + pydefs,
       "incdirs": [out_headers_dir],
       "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
-      "libs": ["Iex" + lib_suffix],
       "custom": [python.SoftRequire]
    },
    {
-      "name": "PyImath" + lib_suffix,
-      "type": "sharedlib",
+      "name": "PyImath" + static_lib_suffix,
+      "type": "staticlib",
+      "symvis": "default",
       "alias": "pyimath",
       "prefix": "python/" + python.Version(),
       "bldprefix": "python" + python.Version(),
-      "rpaths": ["../.."],
       "defs": ["PYIMATH_EXPORTS"] + pydefs,
       "incdirs": [out_headers_dir],
       "srcs": pyimath_srcs,
-      "libs": ["Iex" + lib_suffix,
-               "IexMath" + lib_suffix,
-               "Imath" + lib_suffix],
       "custom": [python.SoftRequire, boost.Require(libs=["python"])]
    },
    {
@@ -490,13 +486,12 @@ prjs = [
       "prefix": python.ModulePrefix() + "/" + python.Version(),
       "bldprefix": "python" + python.Version(),
       "symvis": "default",
-      "rpaths": ["../.."],
       "defs": pydefs,
       "incdirs": [out_headers_dir],
       "srcs": ["PyIlmBase/PyIex/iexmodule.cpp"],
       "libdirs": [excons.OutputBaseDirectory() + "/lib/python/" + python.Version()],
-      "libs": ["PyIex" + lib_suffix,
-               "Iex" + lib_suffix],
+      "staticlibs": ["PyIex" + static_lib_suffix,
+                     "Iex" + static_lib_suffix],
       "custom": [python.SoftRequire, boost.Require(libs=["python"])],
    },
    {
@@ -506,18 +501,17 @@ prjs = [
       "prefix": python.ModulePrefix() + "/" + python.Version(),
       "bldprefix": "python" + python.Version(),
       "symvis": "default",
-      "rpaths": ["../.."],
       "defs": pydefs,
       "incdirs": [out_headers_dir],
       "srcs": ["PyIlmBase/PyImath/imathmodule.cpp",
                "PyIlmBase/PyImath/PyImathFun.cpp",
                "PyIlmBase/PyImath/PyImathBasicTypes.cpp"],
       "libdirs": [excons.OutputBaseDirectory() + "/lib/python/" + python.Version()],
-      "libs": ["PyImath" + lib_suffix,
-               "PyIex" + lib_suffix,
-               "IexMath" + lib_suffix,
-               "Imath" + lib_suffix,
-               "Iex" + lib_suffix],
+      "staticlibs": ["PyImath" + static_lib_suffix,
+                     "PyIex" + static_lib_suffix,
+                     "IexMath" + static_lib_suffix,
+                     "Imath" + static_lib_suffix,
+                     "Iex" + static_lib_suffix],
       "custom": [python.SoftRequire, boost.Require(libs=["python"])],
    },
    # tests
