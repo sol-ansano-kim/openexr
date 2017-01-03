@@ -51,6 +51,37 @@ static TypeTranslator<IEX_NAMESPACE::BaseExc> *_baseExcTranslator = 0;
 
 PYIEX_EXPORT TypeTranslator<IEX_NAMESPACE::BaseExc> &baseExcTranslator()
 {
+    if (!_baseExcTranslator)
+    {
+        void *ptr = 0;
+
+        PyObject *mod = PyImport_ImportModule("iex");
+        if (mod)
+        {
+            PyObject *obj = PyObject_GetAttrString(mod, "_baseExcTranslator");
+            if (obj)
+            {
+#if PY_VERSION_HEX < 0x02070000
+                if (PyCObject_Check(obj))
+                {
+                    ptr = PyCObject_AsVoidPtr(obj);
+                }
+#else
+                if (PyCapsule_CheckExact(obj))
+                {
+                    ptr = PyCapsule_GetPointer(obj, 0);
+                }
+#endif
+                Py_DECREF(obj);
+            }
+            Py_DECREF(mod);
+        }
+
+        if (ptr)
+        {
+            _baseExcTranslator = (TypeTranslator<IEX_NAMESPACE::BaseExc> *) ptr;
+        }
+    }
     return *_baseExcTranslator;
 }
 

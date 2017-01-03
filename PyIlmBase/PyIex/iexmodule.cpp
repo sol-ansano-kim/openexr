@@ -53,6 +53,21 @@ static void translateBaseExc(const IEX_NAMESPACE::BaseExc &exc)
     PyErr_SetObject(baseExcTranslator().typeObject(&exc),ExcTranslator<IEX_NAMESPACE::BaseExc>::convert(exc));
 }
 
+#if PY_VERSION_HEX < 0x02070000
+static void BaseExcTranslator_Destructor(void *ptr)
+{
+#else
+static void BaseExcTranslator_Destructor(PyObject *obj)
+{
+    void *ptr = PyCapsule_GetPointer(obj, 0);
+#endif
+    TypeTranslator<IEX_NAMESPACE::BaseExc> *baseExcTr = (TypeTranslator<IEX_NAMESPACE::BaseExc>*) ptr;
+    if (baseExcTr)
+    {
+        delete baseExcTr;
+    }
+}
+
 void
 registerBaseExc()
 {
@@ -66,7 +81,16 @@ registerBaseExc()
     // if module != baseModule, the type object isn't used
     object exc_class = createExceptionProxy(name, module, baseName, baseModule, 0);
     scope().attr(name.c_str()) = exc_class;
-    setBaseExcTranslator(new TypeTranslator<IEX_NAMESPACE::BaseExc>(name, module, exc_class.ptr()));
+    TypeTranslator<IEX_NAMESPACE::BaseExc> *baseExcTr = new TypeTranslator<IEX_NAMESPACE::BaseExc>(name, module, exc_class.ptr());
+    setBaseExcTranslator(baseExcTr);
+
+#if PY_VERSION_HEX < 0x02070000
+    PyObject *obj = PyCObject_FromVoidPtr((void*)baseExcTr, BaseExcTranslator_Destructor);
+#else
+    PyObject *obj = PyCapsule_New((void*)baseExcTr, 0, BaseExcTranslator_Destructor);
+#endif
+    PyObject_SetAttrString(scope().ptr(), "_baseExcTranslator", obj);
+    Py_DECREF(obj);
 
     // to python
     to_python_converter<IEX_NAMESPACE::BaseExc,ExcTranslator<IEX_NAMESPACE::BaseExc> >();
