@@ -389,6 +389,7 @@ prjs = [
    {
       "name": "b44ExpLogTable",
       "type": "program",
+      "symvis": "default",
       "incdirs": [out_headers_dir, "OpenEXR/IlmImf"],
       "srcs": ["OpenEXR/IlmImf/b44ExpLogTable.cpp"],
       "staticlibs": ["IlmThread" + static_lib_suffix,
@@ -399,6 +400,7 @@ prjs = [
    {
       "name": "dwaLookups",
       "type": "program",
+      "symvis": "default",
       "incdirs": [out_headers_dir, "OpenEXR/IlmImf"],
       "srcs": ["OpenEXR/IlmImf/dwaLookups.cpp"],
       "staticlibs": ["IlmThread" + static_lib_suffix,
@@ -518,6 +520,7 @@ prjs = [
    {
       "name": "HalfTest",
       "type": "program",
+      "symvis": "default",
       "incdirs": [out_headers_dir, "IlmBase/HalfTest"],
       "srcs": glob.glob("IlmBase/HalfTest/*.cpp"),
       "staticlibs": ["Half" + static_lib_suffix]
@@ -525,6 +528,7 @@ prjs = [
    {
       "name": "IexTest",
       "type": "program",
+      "symvis": "default",
       "incdirs": [out_headers_dir, "IlmBase/IexTest"],
       "srcs": glob.glob("IlmBase/IexTest/*.cpp"),
       "staticlibs": ["Iex" + static_lib_suffix]
@@ -532,6 +536,7 @@ prjs = [
    {
       "name": "ImathTest",
       "type": "program",
+      "symvis": "default",
       "incdirs": [out_headers_dir, "IlmBase/ImathTest"],
       "srcs": glob.glob("IlmBase/ImathTest/*.cpp"),
       "staticlibs": ["Imath" + static_lib_suffix,
@@ -541,6 +546,7 @@ prjs = [
       "name": "IlmImfTest",
       "type": "program",
       "defs": openexr_defs,
+      "symvis": "default",
       "incdirs": [out_headers_dir, "OpenEXR/IlmImfTest"],
       "srcs": glob.glob("OpenEXR/IlmImfTest/*.cpp"),
       "staticlibs": ["IlmImf" + static_lib_suffix,
@@ -554,6 +560,7 @@ prjs = [
       "name": "IlmImfUtilTest",
       "type": "program",
       "defs": openexr_defs,
+      "symvis": "default",
       "incdirs": [out_headers_dir, "OpenEXR/IlmImfUtilTest"],
       "srcs": glob.glob("OpenEXR/IlmImfUtilTest/*.cpp"),
       "staticlibs": ["IlmImfUtil" + static_lib_suffix,
@@ -576,6 +583,7 @@ for d in glob.glob("OpenEXR/exr*"):
    prjs.append({"name": os.path.basename(d),
                 "type": "program",
                 "defs": openexr_defs,
+                "symvis": "default",
                 "incdirs": [out_headers_dir, d],
                 "srcs": glob.glob(d+"/*.cpp"),
                 "staticlibs": ["IlmImf" + static_lib_suffix,
