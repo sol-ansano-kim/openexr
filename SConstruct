@@ -216,7 +216,7 @@ if sys.platform != "win32":
 else:
    env.Append(CPPDEFINES=["_CRT_SECURE_NO_WARNINGS"])
 
-env["BUILDERS"]["GenerateHeader"] = Builder(action=GenerateHeader, suffix=".h")
+env["BUILDERS"]["GenerateHeader"] = Builder(action=Action(GenerateHeader, "Generating $TARGET ..."), suffix=".h")
 
 conf = Configure(env)
 if conf.TryCompile(gcc_include_asm_avx_check_src, ".cpp"):
