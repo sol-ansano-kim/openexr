@@ -692,3 +692,75 @@ env.Alias("tests", ["HalfTest",
                     "IlmImfUtilTest"])
 
 env.Alias("bin", filter(lambda x: x.startswith("exr"), tgts.keys()))
+
+Help("""USAGE
+  scons [OPTIONS] TARGET*
+
+AVAILABLE TARGETS
+   half_static       : Half static library
+   iex_static        : Iex static library
+   iexmath_static    : IexMath static library
+   imath_static      : Imath static library
+   ilmimf_static     : IlmImf static library
+   ilmimfutil_static : IlmImfUtil static library
+
+   half_shared       : Half shared library
+   iex_shared        : Iex shared library
+   iexmath_shared    : IexMath shared library
+   imath_shared      : Imath shared library
+   ilmimf_shared     : IlmImf shared library
+   ilmimfutil_shared : IlmImfUtil shared library
+
+   pyiex             : Iex python helper library (static)
+   pyimath           : Imath python help library (static)
+   iexmodule         : Iex python module
+   iexmathmodule     : Imath python module
+
+   HalfTest          : Half library tests
+   IexTest           : Iex library tests
+   ImathTest         : Imath library tests
+   IlmImfTest        : IlmImf library tests
+   IlmImfUtilTest    : IlmImfUtil library tests
+
+   libs              : All libraries
+   staticlibs        : All static libraries
+   sharedlibs        : All static libraries
+   python            : Python bindings
+   bin               : Test programs
+
+OPENEXR OPTIONS
+   lib-suffix=<str>             : Library suffix                     ["-2_2"]
+   static-lib-suffix=<str>      : Static library addition suffix     ["_s"]
+   namespace-version=0|1        : Internally use versioned namespace [1]
+   zlib-win-api=0|1             : Use zlib win API                   [0]
+
+   with-python=<str>            : Set python version to use using either
+                                  a version number or a path prefix  [current interpreter version]
+
+   with-boost=<str>             : Boost prefix.
+   with-boost-inc=<str>         : Boost default headers directory.   [<prefix>/include]
+   with-boost-lib=<str>         : Boost default libraries directory. [<prefix>/lib]
+   boost-static=0|1             : Link boost static libraries.       [0]
+   boost-libsuffix=<str>        : Default boost library suffix.      ['']
+   boost-autolink=0|1           : Disable boost auto linking         [1]
+                                  (windows only)
+
+   with-boost-python=<path>     : Boost python prefix                [inherit from boost]
+   with-boost-python-inc=<path> : Boost python headers directory     [inherit from boost]
+   with-boost-python-lib=<path> : Boost python libraries directory   [inherit from boost]
+   boost-python-static=0|1      : Link boost python statically       [inherit from boost]
+   boost-python-libname=<str>   : Override boost python library name []
+   boost-python-libsuffix=<str> : Boost python library suffix        [inherit from boost]
+   boost-python-autolink=0|1    : Disable boost python auto linking  [inherit from boost]
+
+   with-zlib=<path>             : Zlib prefix.
+   with-zlib-inc=<path>         : Zlib headers directory.           [<prefix>/include]
+   with-zlib-lib=<path>         : Zlib libraries directory.         [<prefix>/lib]
+   zlib-static=0|1              : Link Zlib statically.             [0]
+   zlib-libname=<str>           : Override Zlib library name.       []
+   zlib-libsuffix=<str>         : Default Zlib library name suffix. []
+                                  Ignored if zlib-libname is set
+                                  Default name is 'z' on osx and linux,
+                                  'zlib' (static) or 'zdll' (shared) on windows
+
+""" + excons.GetOptionsString())
