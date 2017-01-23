@@ -291,16 +291,19 @@ prjs = []
 # Half
 prjs.append({"name": "eLut",
              "type": "program",
+             "desc": "Half library header generator",
              "prefix": "..",
              "srcs": ["IlmBase/Half/eLut.cpp"]})
 
 prjs.append({"name": "toFloat",
              "type": "program",
+             "desc": "Half library header generator",
              "prefix": "..",
              "srcs": ["IlmBase/Half/toFloat.cpp"]})
 
 prjs.append({"name": "Half" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "Iex static library",
              "alias": "Half-static",
              "symvis": "default",
              "incdirs": [out_headers_dir],
@@ -308,6 +311,7 @@ prjs.append({"name": "Half" + static_lib_suffix,
 
 prjs.append({"name": "Half" + lib_suffix,
              "type": "sharedlib",
+             "desc": "Half shared library",
              "alias": "Half-shared",
              "defs": (["OPENEXR_DLL", "HALF_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": [out_headers_dir],
@@ -321,6 +325,7 @@ if not lib_suffix:
 # Iex
 prjs.append({"name": "Iex" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "Iex static library",
              "alias": "Iex-static",
              "symvis": "default",
              "incdirs": [out_headers_dir],
@@ -328,6 +333,7 @@ prjs.append({"name": "Iex" + static_lib_suffix,
 
 prjs.append({"name": "Iex" + lib_suffix,
              "type": "sharedlib",
+             "desc": "Iex shared library",
              "alias": "Iex-shared",
              "defs": (["OPENEXR_DLL", "IEX_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": [out_headers_dir],
@@ -341,6 +347,7 @@ if not lib_suffix:
 # IexMath
 prjs.append({"name": "IexMath" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "IexMath static library",
              "alias": "IexMath-static",
              "symvis": "default",
              "incdirs": [out_headers_dir],
@@ -348,6 +355,7 @@ prjs.append({"name": "IexMath" + static_lib_suffix,
 
 prjs.append({"name": "IexMath" + lib_suffix,
              "type": "sharedlib",
+             "desc": "IexMath shared library",
              "alias": "IexMath-shared",
              "defs": (["OPENEXR_DLL", "IEXMATH_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": [out_headers_dir],
@@ -362,6 +370,7 @@ if not lib_suffix:
 # Imath
 prjs.append({"name": "Imath" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "Imath static library",
              "alias": "Imath-static",
              "symvis": "default",
              "incdirs": [out_headers_dir],
@@ -369,6 +378,7 @@ prjs.append({"name": "Imath" + static_lib_suffix,
 
 prjs.append({"name": "Imath" + lib_suffix,
              "type": "sharedlib",
+             "desc": "Imath shared library",
              "alias": "Imath-shared",
              "defs": (["OPENEXR_DLL", "IMATH_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": [out_headers_dir],
@@ -383,6 +393,7 @@ if not lib_suffix:
 # IlmThread
 prjs.append({"name": "IlmThread" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "IlmThread static library",
              "alias": "IlmThread-static",
              "symvis": "default",
              "incdirs": [out_headers_dir],
@@ -390,6 +401,7 @@ prjs.append({"name": "IlmThread" + static_lib_suffix,
 
 prjs.append({"name": "IlmThread" + lib_suffix,
              "type": "sharedlib",
+             "desc": "IlmThread shared library",
              "alias": "IlmThread-shared",
              "defs": (["OPENEXR_DLL", "ILMTHREAD_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": [out_headers_dir],
@@ -404,6 +416,7 @@ if not lib_suffix:
 # IlmImf
 prjs.append({"name": "b44ExpLogTable",
              "type": "program",
+             "desc": "IlmImf library header generator",
              "prefix": "..",
              "symvis": "default",
              "incdirs": [out_headers_dir, "OpenEXR/IlmImf"],
@@ -416,6 +429,7 @@ prjs.append({"name": "b44ExpLogTable",
 prjs.append({"name": "dwaLookups",
              "type": "program",
              "prefix": "..",
+             "desc": "IlmImf library header generator",
              "symvis": "default",
              "incdirs": [out_headers_dir, "OpenEXR/IlmImf"],
              "srcs": ["OpenEXR/IlmImf/dwaLookups.cpp"],
@@ -426,6 +440,7 @@ prjs.append({"name": "dwaLookups",
 
 prjs.append({"name": "IlmImf" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "IlmImf static library",
              "alias": "IlmImf-static",
              "symvis": "default",
              "defs": openexr_defs,
@@ -435,6 +450,7 @@ prjs.append({"name": "IlmImf" + static_lib_suffix,
 
 prjs.append({"name": "IlmImf" + lib_suffix,
              "type": "sharedlib",
+             "desc": "IlmImf shared library",
              "alias": "IlmImf-shared",
              "defs": openexr_defs + (["OPENEXR_DLL", "ILMIMF_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": [out_headers_dir],
@@ -453,6 +469,7 @@ if not lib_suffix:
 # IlmImfUtil
 prjs.append({"name": "IlmImfUtil" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "IlmImfUtil static library",
              "alias": "IlmImfUtil-static",
              "symvis": "default",
              "defs": openexr_defs,
@@ -462,6 +479,7 @@ prjs.append({"name": "IlmImfUtil" + static_lib_suffix,
 
 prjs.append({"name": "IlmImfUtil" + lib_suffix,
              "type": "sharedlib",
+             "desc": "IlmImfUtil shared library",
              "alias": "IlmImfUtil-shared",
              "defs": openexr_defs + (["OPENEXR_DLL", "ILMIMF_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": [out_headers_dir],
@@ -481,6 +499,7 @@ if not lib_suffix:
 # Python
 prjs.append({"name": "PyIex" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "Iex python helper library",
              "symvis": "default",
              "alias": "PyIex",
              "prefix": "python/" + python.Version(),
@@ -492,6 +511,7 @@ prjs.append({"name": "PyIex" + static_lib_suffix,
 
 prjs.append({"name": "PyImath" + static_lib_suffix,
              "type": "staticlib",
+             "desc": "Imath python helper library",
              "symvis": "default",
              "alias": "PyImath",
              "prefix": "python/" + python.Version(),
@@ -503,6 +523,7 @@ prjs.append({"name": "PyImath" + static_lib_suffix,
 
 prjs.append({"name": "iexmodule",
              "type": "dynamicmodule",
+             "desc": "Iex library python bindings",
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
@@ -517,6 +538,7 @@ prjs.append({"name": "iexmodule",
 
 prjs.append({"name": "imathmodule",
              "type": "dynamicmodule",
+             "desc": "Imath library python bindings",
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
@@ -544,6 +566,7 @@ for d in glob.glob("OpenEXR/exr*"):
 
    prjs.append({"name": os.path.basename(d),
                 "type": "program",
+                "desc": "Command line tool",
                 "defs": openexr_defs,
                 "symvis": "default",
                 "incdirs": [out_headers_dir, d],
@@ -558,6 +581,7 @@ for d in glob.glob("OpenEXR/exr*"):
 # Tests
 prjs.append({"name": "HalfTest",
              "type": "program",
+             "desc": "Half library tests",
              "symvis": "default",
              "incdirs": [out_headers_dir, "IlmBase/HalfTest"],
              "srcs": glob.glob("IlmBase/HalfTest/*.cpp"),
@@ -565,6 +589,7 @@ prjs.append({"name": "HalfTest",
 
 prjs.append({"name": "IexTest",
              "type": "program",
+             "desc": "Iex library tests",
              "symvis": "default",
              "incdirs": [out_headers_dir, "IlmBase/IexTest"],
              "srcs": glob.glob("IlmBase/IexTest/*.cpp"),
@@ -572,6 +597,7 @@ prjs.append({"name": "IexTest",
 
 prjs.append({"name": "ImathTest",
              "type": "program",
+             "desc": "Imath library tests",
              "symvis": "default",
              "incdirs": [out_headers_dir, "IlmBase/ImathTest"],
              "srcs": glob.glob("IlmBase/ImathTest/*.cpp"),
@@ -580,6 +606,7 @@ prjs.append({"name": "ImathTest",
 
 prjs.append({"name": "IlmImfTest",
              "type": "program",
+             "desc": "IlmImf library tests",
              "defs": openexr_defs,
              "symvis": "default",
              "incdirs": [out_headers_dir, "OpenEXR/IlmImfTest"],
@@ -593,6 +620,7 @@ prjs.append({"name": "IlmImfTest",
 
 prjs.append({"name": "IlmImfUtilTest",
              "type": "program",
+             "desc": "IlmImfUtil library tests",
              "defs": openexr_defs,
              "symvis": "default",
              "incdirs": [out_headers_dir, "OpenEXR/IlmImfUtilTest"],
@@ -605,6 +633,22 @@ prjs.append({"name": "IlmImfUtilTest",
                             "Half" + static_lib_suffix],
              "custom": [threads.Require, zlib.Require]})
 
+build_opts = """OPENEXR OPTIONS
+   lib-suffix=<str>             : Library suffix                     ["-2_2"]
+   static-lib-suffix=<str>      : Static library addition suffix     ["_s"]
+   namespace-version=0|1        : Internally use versioned namespace [1]
+   zlib-win-api=0|1             : Use zlib win API                   [0]"""
+
+excons.AddHelpOptions(openexr=build_opts)
+excons.AddHelpTargets({"libs": "All libraries",
+                       "libs-static": "All static libraries",
+                       "libs-shared": "All shared libraries",
+                       "ilmbase": "All IlmBase libraries",
+                       "ilmbase-static": "All IlmBase static libraries",
+                       "ilmbase-shared": "All IlmBase shared librarues",
+                       "bins": "All command line tools",
+                       "python": "All python bindings",
+                       "tests": "All tests"})
 
 tgts = excons.DeclareTargets(env, prjs)
 
@@ -659,6 +703,8 @@ env.Alias("ilmbase-shared", [tgts["Half-shared"],
 
 env.Alias("libs", ["libs-static", "libs-shared"])
 
+env.Alias("ilmbase", ["ilmbase-static", "ilmbase-shared"])
+
 env.Alias("bins", [tgts[y] for y in filter(lambda x: x.startswith("exr"), tgts.keys())])
 
 env.Alias("python", [tgts["PyIex"],
@@ -671,88 +717,3 @@ env.Alias("tests", [tgts["HalfTest"],
                     tgts["ImathTest"],
                     tgts["IlmImfTest"],
                     tgts["IlmImfUtilTest"]])
-
-Help("""USAGE
-  scons [OPTIONS] TARGET*
-
-AVAILABLE TARGETS
-   Half-static       : Half static library
-   Iex-static        : Iex static library
-   IexMath-static    : IexMath static library
-   Imath-static      : Imath static library
-   IlmImf-static     : IlmImf static library
-   IlmImfUtil-static : IlmImfUtil static library
-
-   Half-shared       : Half shared library
-   Iex-shared        : Iex shared library
-   IexMath-shared    : IexMath shared library
-   Imath-shared      : Imath shared library
-   IlmImf-shared     : IlmImf shared library
-   IlmImfUtil-shared : IlmImfUtil shared library
-
-   PyIex             : Iex python helper library (static)
-   PyImath           : Imath python help library (static)
-   iexmodule         : Iex python module
-   iexmathmodule     : Imath python module
-
-   exr2aces          : Command line tool
-   exrbuild          : Command line tool
-   exrenvmap         : Command line tool
-   exrheader         : Command line tool
-   exrmakepreview    : Command line tool
-   exrmaketiled      : Command line tool
-   exrmultipart      : Command line tool
-   exrmultiview      : Command line tool
-   exrstdattr        : Command line tool
-
-   HalfTest          : Half library tests
-   IexTest           : Iex library tests
-   ImathTest         : Imath library tests
-   IlmImfTest        : IlmImf library tests
-   IlmImfUtilTest    : IlmImfUtil library tests
-
-   libs              : All libraries
-   libs-static       : All static libraries
-   libs-shared       : All static libraries
-   ilmbase-static    : IlmBase static libraries
-   ilmbase-shared    : IlmBase shared libraries
-   bins              : All command line tools
-   python            : Python bindings
-   tests             : Test programs
-
-OPENEXR OPTIONS
-   lib-suffix=<str>             : Library suffix                     ["-2_2"]
-   static-lib-suffix=<str>      : Static library addition suffix     ["_s"]
-   namespace-version=0|1        : Internally use versioned namespace [1]
-   zlib-win-api=0|1             : Use zlib win API                   [0]
-
-   with-python=<str>            : Set python version to use using either
-                                  a version number or a path prefix  [current interpreter version]
-
-   with-boost=<str>             : Boost prefix.
-   with-boost-inc=<str>         : Boost default headers directory.   [<prefix>/include]
-   with-boost-lib=<str>         : Boost default libraries directory. [<prefix>/lib]
-   boost-static=0|1             : Link boost static libraries.       [0]
-   boost-libsuffix=<str>        : Default boost library suffix.      ['']
-   boost-autolink=0|1           : Disable boost auto linking         [1]
-                                  (windows only)
-
-   with-boost-python=<path>     : Boost python prefix                [inherit from boost]
-   with-boost-python-inc=<path> : Boost python headers directory     [inherit from boost]
-   with-boost-python-lib=<path> : Boost python libraries directory   [inherit from boost]
-   boost-python-static=0|1      : Link boost python statically       [inherit from boost]
-   boost-python-libname=<str>   : Override boost python library name []
-   boost-python-libsuffix=<str> : Boost python library suffix        [inherit from boost]
-   boost-python-autolink=0|1    : Disable boost python auto linking  [inherit from boost]
-
-   with-zlib=<path>             : Zlib prefix.
-   with-zlib-inc=<path>         : Zlib headers directory.           [<prefix>/include]
-   with-zlib-lib=<path>         : Zlib libraries directory.         [<prefix>/lib]
-   zlib-static=0|1              : Link Zlib statically.             [0]
-   zlib-libname=<str>           : Override Zlib library name.       []
-   zlib-libsuffix=<str>         : Default Zlib library name suffix. []
-                                  Ignored if zlib-libname is set
-                                  Default name is 'z' on osx and linux,
-                                  'zlib' (static) or 'zdll' (shared) on windows
-
-""" + excons.GetOptionsString())
