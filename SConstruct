@@ -260,7 +260,7 @@ if sys.platform != "win32":
 
 openexr_defs = []
 if zlib_win_api:
-   openexr_defs.append("ZLIB_WIN_API")
+   openexr_defs.append("ZLIB_WINAPI")
 
 def ilmimf_filter(x):
    name = os.path.splitext(os.path.basename(x))[0]
