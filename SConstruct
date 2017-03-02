@@ -205,6 +205,35 @@ def GenerateHeader(target, source, env):
    return None
 
 
+# Windows specifics
+if sys.platform == "win32":
+   # Pull packages using conan.io
+   import conan
+   conan.Install(args=["--build", "Boost"],
+                 settings={"compiler": "Visual Studio",
+                           "compiler.version": int(excons.GetArgument("mscver", 10.0, float))})
+   # Zlib setup
+   try:
+      opts = conan.GetLibConf(lib="zlib")
+      incdir  = opts["CPPPATH"][0]
+      libdir  = opts["LIBPATH"][0]
+      libname = opts["LIBS"][0]
+      excons.SetArgument("with-zlib-inc", incdir)
+      excons.SetArgument("with-zlib-lib", libdir)
+      excons.SetArgument("zlib-libname", libname)
+   except:
+      pass
+   # Boost setup
+   try:
+      opts = conan.GetLibConf(lib="Boost")
+      incdir  = opts["CPPPATH"][0]
+      libdir  = opts["LIBPATH"][0]
+      # boost python name ?
+      excons.SetArgument("with-boost-python-inc", incdir)
+      excons.SetArgument("with-boost-python-lib", libdir)
+   except:
+      pass
+
 env = excons.MakeBaseEnv()
 
 if sys.platform != "win32":
