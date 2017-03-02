@@ -34,5 +34,6 @@ IlmBase/Half/eLut.h
 IlmBase/Half/toFloat.h
 OpenEXR/IlmImf/b44ExpLogTable.h
 OpenEXR/IlmImf/dwaLookups.h
-conan*
+conanbuildinfo.txt
+*.pyc
 
