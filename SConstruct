@@ -507,7 +507,7 @@ prjs.append({"name": "PyIex" + static_lib_suffix,
              "defs": ["PYIEX_EXPORTS"] + pydefs,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
-             "custom": [python.SoftRequire]})
+             "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
 prjs.append({"name": "PyImath" + static_lib_suffix,
              "type": "staticlib",
