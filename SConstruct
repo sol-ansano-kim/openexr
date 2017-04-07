@@ -10,12 +10,16 @@ import excons.tools.python as python
 import excons.tools.boost as boost
 
 
+
+env = excons.MakeBaseEnv()
+
+
 lib_version = (2, 2, 0)
 lib_version_str = "%d.%d.%d" % lib_version
-lib_suffix = excons.GetArgument("openexr-lib-suffix", "-2_2")
-static_lib_suffix = lib_suffix + excons.GetArgument("openexr-static-lib-suffix", "_s")
+lib_suffix = excons.GetArgument("openexr-suffix", "-2_2")
+static_lib_suffix = lib_suffix + excons.GetArgument("openexr-static-suffix", "_s")
 namespace_version = (excons.GetArgument("openexr-namespace-version", 1, int) != 0)
-zlib_win_api = (excons.GetArgument("openexr-zlib-win-api", 0, int) != 0)
+zlib_win_api = (excons.GetArgument("openexr-zlib-winapi", 0, int) != 0)
 have_gcc_include_asm_avx = False
 have_sysconf_nprocessors_onln = False
 
@@ -205,7 +209,6 @@ def GenerateHeader(target, source, env):
    return None
 
 
-env = excons.MakeBaseEnv()
 
 if sys.platform != "win32":
    env.Append(CPPFLAGS=" -Wno-unused-variable -Wno-unused-parameter")
@@ -634,10 +637,10 @@ prjs.append({"name": "IlmImfUtilTest",
              "custom": [threads.Require, zlib.Require]})
 
 build_opts = """OPENEXR OPTIONS
-   openexr-lib-suffix=<str>             : Library suffix                     ["-2_2"]
-   openexr-static-lib-suffix=<str>      : Static library addition suffix     ["_s"]
-   openexr-namespace-version=0|1        : Internally use versioned namespace [1]
-   openexr-zlib-win-api=0|1             : Use zlib win API                   [0]"""
+   openexr-suffix=<str>          : Library suffix                     ["-2_2"]
+   openexr-static-suffix=<str>   : Static library addition suffix     ["_s"]
+   openexr-namespace-version=0|1 : Internally use versioned namespace [1]
+   openexr-zlib-winapi=0|1       : Use zlib win API                   [0]"""
 
 excons.AddHelpOptions(openexr=build_opts)
 excons.AddHelpTargets({"libs": "All libraries",
