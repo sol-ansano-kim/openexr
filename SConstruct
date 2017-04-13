@@ -643,15 +643,15 @@ build_opts = """OPENEXR OPTIONS
    openexr-zlib-winapi=0|1       : Use zlib win API                   [0]"""
 
 excons.AddHelpOptions(openexr=build_opts)
-excons.AddHelpTargets({"libs": "All libraries",
-                       "libs-static": "All static libraries",
-                       "libs-shared": "All shared libraries",
+excons.AddHelpTargets({"openexr": "All libraries",
+                       "openexr-static": "All static libraries",
+                       "openexr-shared": "All shared libraries",
                        "ilmbase": "All IlmBase libraries",
                        "ilmbase-static": "All IlmBase static libraries",
                        "ilmbase-shared": "All IlmBase shared librarues",
-                       "bins": "All command line tools",
-                       "python": "All python bindings",
-                       "tests": "All tests"})
+                       "openexr-tools": "All command line tools",
+                       "openexr-python": "All python bindings",
+                       "openexr-tests": "All tests"})
 
 tgts = excons.DeclareTargets(env, prjs)
 
@@ -676,21 +676,21 @@ env.Depends(tgts["IlmImf-shared"], ilmimf_headers)
 env.Depends(tgts["IlmImfUtil-static"], ilmimfutil_headers)
 env.Depends(tgts["IlmImfUtil-shared"], ilmimfutil_headers)
 
-env.Alias("libs-static", [tgts["Half-static"],
-                          tgts["Iex-static"],
-                          tgts["IexMath-static"],
-                          tgts["Imath-static"],
-                          tgts["IlmThread-static"],
-                          tgts["IlmImf-static"],
-                          tgts["IlmImfUtil-static"]])
+env.Alias("openexr-static", [tgts["Half-static"],
+                             tgts["Iex-static"],
+                             tgts["IexMath-static"],
+                             tgts["Imath-static"],
+                             tgts["IlmThread-static"],
+                             tgts["IlmImf-static"],
+                             tgts["IlmImfUtil-static"]])
 
-env.Alias("libs-shared", [tgts["Half-shared"],
-                          tgts["Iex-shared"],
-                          tgts["IexMath-shared"],
-                          tgts["Imath-shared"],
-                          tgts["IlmThread-shared"],
-                          tgts["IlmImf-shared"],
-                          tgts["IlmImfUtil-shared"]])
+env.Alias("openexr-shared", [tgts["Half-shared"],
+                             tgts["Iex-shared"],
+                             tgts["IexMath-shared"],
+                             tgts["Imath-shared"],
+                             tgts["IlmThread-shared"],
+                             tgts["IlmImf-shared"],
+                             tgts["IlmImfUtil-shared"]])
 
 env.Alias("ilmbase-static", [tgts["Half-static"],
                              tgts["Iex-static"],
@@ -704,19 +704,21 @@ env.Alias("ilmbase-shared", [tgts["Half-shared"],
                              tgts["Imath-shared"],
                              tgts["IlmThread-shared"]])
 
-env.Alias("libs", ["libs-static", "libs-shared"])
-
 env.Alias("ilmbase", ["ilmbase-static", "ilmbase-shared"])
 
-env.Alias("bins", [tgts[y] for y in filter(lambda x: x.startswith("exr"), tgts.keys())])
+env.Alias("openexr-tools", [tgts[y] for y in filter(lambda x: x.startswith("exr"), tgts.keys())])
 
-env.Alias("python", [tgts["PyIex"],
-                     tgts["PyImath"],
-                     tgts["iexmodule"],
-                     tgts["imathmodule"]])
+env.Alias("openexr-python", [tgts["PyIex"],
+                             tgts["PyImath"],
+                             tgts["iexmodule"],
+                             tgts["imathmodule"]])
 
-env.Alias("tests", [tgts["HalfTest"],
-                    tgts["IexTest"],
-                    tgts["ImathTest"],
-                    tgts["IlmImfTest"],
-                    tgts["IlmImfUtilTest"]])
+env.Alias("openexr", ["openexr-static", "openexr-shared", "openexr-python", "openexr-tools"])
+
+env.Alias("openexr-tests", [tgts["HalfTest"],
+                            tgts["IexTest"],
+                            tgts["ImathTest"],
+                            tgts["IlmImfTest"],
+                            tgts["IlmImfUtilTest"]])
+
+Default(["openexr"])
