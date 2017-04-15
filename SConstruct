@@ -229,6 +229,7 @@ else:
    zlibRequire = rv["require"]
 
 
+
 if sys.platform != "win32":
    env.Append(CPPFLAGS=" -Wno-unused-variable -Wno-unused-parameter")
    if sys.platform == "darwin":
@@ -598,13 +599,8 @@ prjs.append({"name": "imathmodule",
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
 # Command line tools
-for d in excons.glob("OpenEXR/exr*"):
-   if not os.path.isdir(d):
-      continue
-   
-   if not os.path.isfile(d+"/CMakeLists.txt"):
-      continue
-
+for f in excons.glob("OpenEXR/exr*/CMakeLists.txt"):
+   d = os.path.dirname(f)
    prjs.append({"name": os.path.basename(d),
                 "type": "program",
                 "desc": "Command line tool",
@@ -688,7 +684,7 @@ excons.AddHelpTargets({"openexr": "All libraries",
                        "ilmbase-static": "All IlmBase static libraries",
                        "ilmbase-shared": "All IlmBase shared librarues",
                        "openexr-tools": "All command line tools",
-                       "openexr-python": "All python bindings",
+                       "ilmbase-python": "All python bindings",
                        "openexr-tests": "All tests"})
 
 tgts = excons.DeclareTargets(env, prjs)
@@ -746,12 +742,12 @@ env.Alias("ilmbase", ["ilmbase-static", "ilmbase-shared"])
 
 env.Alias("openexr-tools", [tgts[y] for y in filter(lambda x: x.startswith("exr"), tgts.keys())])
 
-env.Alias("openexr-python", [tgts["PyIex"],
+env.Alias("ilmbase-python", [tgts["PyIex"],
                              tgts["PyImath"],
                              tgts["iexmodule"],
                              tgts["imathmodule"]])
 
-env.Alias("openexr", ["openexr-static", "openexr-shared", "openexr-python", "openexr-tools"])
+env.Alias("openexr", ["openexr-static", "openexr-shared", "ilmbase-python", "openexr-tools"])
 
 env.Alias("openexr-tests", [tgts["HalfTest"],
                             tgts["IexTest"],
