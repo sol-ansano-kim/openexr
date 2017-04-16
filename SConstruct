@@ -860,5 +860,3 @@ def RequireIlmImf(env, static=False):
   excons.Link(env, HalfName(static), static=static, force=True, silent=True)
 
 Export("HalfName HalfPath RequireHalf IexName IexPath IexMathName IexMathPath ImathName ImathPath RequireImath IlmThreadName IlmThreadPath RequireIlmThread IlmImfName IlmImfPath RequireIlmImf")
-
-Default(["openexr"])
