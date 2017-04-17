@@ -334,8 +334,7 @@ prjs.append({"name": "Half" + static_lib_suffix,
              "alias": "Half-static",
              "symvis": "default",
              "incdirs": ilmbase_incdirs + configs_incdirs,
-             "srcs": ["IlmBase/Half/half.cpp"],
-             "srcdeps": {"IlmBase/Half/half.cpp": tofloath + eluth}})
+             "srcs": ["IlmBase/Half/half.cpp"]})
 
 prjs.append({"name": "Half" + lib_suffix,
              "type": "sharedlib",
@@ -343,8 +342,7 @@ prjs.append({"name": "Half" + lib_suffix,
              "alias": "Half-shared",
              "defs": (["OPENEXR_DLL", "HALF_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": ilmbase_incdirs + configs_incdirs,
-             "srcs": ["IlmBase/Half/half.cpp"],
-             "srcdeps": {"IlmBase/Half/half.cpp": tofloath + eluth}})
+             "srcs": ["IlmBase/Half/half.cpp"]})
 
 if not lib_suffix:
    prjs[-1]["version"] = lib_version_str
@@ -552,8 +550,6 @@ prjs.append({"name": "IlmImf" + static_lib_suffix,
              "defs": openexr_defs,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ilmimf_srcs,
-             "srcdeps": {"OpenEXR/IlmImf/ImfB44Compressor.cpp": b44h,
-                         "OpenEXR/IlmImf/ImfDwaCompressor.cpp": dwah},
              "custom": [zlibRequire]})
 
 prjs.append({"name": "IlmImf" + lib_suffix,
@@ -563,8 +559,6 @@ prjs.append({"name": "IlmImf" + lib_suffix,
              "defs": openexr_defs + (["OPENEXR_DLL", "ILMIMF_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ilmimf_srcs,
-             "srcdeps": {"OpenEXR/IlmImf/ImfB44Compressor.cpp": b44h,
-                         "OpenEXR/IlmImf/ImfDwaCompressor.cpp": dwah},
              "libs": [File(IlmThreadPath(False)),
                       File(ImathPath(False)),
                       File(IexPath(False)),
