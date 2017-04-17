@@ -216,7 +216,6 @@ def zlibName(static):
 def zlibDefines(static):
   return ([] if static else ["ZLIB_DLL"])
 
-zlibDeps = []
 rv = excons.ExternalLibRequire("zlib", libnameFunc=zlibName, definesFunc=zlibDefines)
 if rv["require"] is None:
    excons.PrintOnce("OpenEXR: Build zlib from sources ...")
@@ -224,7 +223,6 @@ if rv["require"] is None:
    zlibStatic = (excons.GetArgument("zlib-static", 1, int) != 0)
    def zlibRequire(env):
       RequireZlib(env, static=zlibStatic)
-   zlibDeps = [excons.cmake.OutputsCachePath("zlib")]
 else:
    zlibRequire = rv["require"]
 
@@ -316,6 +314,7 @@ openexr_incdirs = ["OpenEXR/IlmImf", "OpenEXR/IlmImfUtil"]
 python_incdirs  = ["PyIlmBase/PyIex", "PyIlmBase/PyImath"]
 configs_incdirs = [out_headers_dir]
 
+
 # Half
 prjs.append({"name": "eLut",
              "type": "program",
@@ -352,6 +351,23 @@ if not lib_suffix:
    prjs[-1]["soname"] = "libHalf.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libHalf.%d.dylib" % lib_version[0]
 
+def HalfName(static=False):
+  return ("Half" + (static_lib_suffix if static else lib_suffix))
+
+def HalfPath(static=False):
+  name = HalfName(static)
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
+  return excons.OutputBaseDirectory() + "/lib/" + libname
+
+def RequireHalf(env, static=False):
+  if not static:
+    env.Append(CPPDEFINES=["OPENEXR_DLL"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  excons.Link(env, HalfPath(static), static=static, force=True, silent=True)
+
 # Iex
 prjs.append({"name": "Iex" + static_lib_suffix,
              "type": "staticlib",
@@ -374,6 +390,17 @@ if not lib_suffix:
    prjs[-1]["soname"] = "libIex.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libIex.%d.dylib" % lib_version[0]
 
+def IexName(static=False):
+  return ("Iex" + (static_lib_suffix if static else lib_suffix))
+
+def IexPath(static=False):
+  name = IexName(static)
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
+  return excons.OutputBaseDirectory() + "/lib/" + libname
+
 # IexMath
 prjs.append({"name": "IexMath" + static_lib_suffix,
              "type": "staticlib",
@@ -390,12 +417,23 @@ prjs.append({"name": "IexMath" + lib_suffix,
              "defs": (["OPENEXR_DLL", "IEXMATH_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/IexMath/*.cpp"),
-             "libs": ["Iex" + lib_suffix]})
+             "libs": [File(IexPath(False))]})
 
 if not lib_suffix:
    prjs[-1]["version"] = lib_version_str
    prjs[-1]["soname"] = "libIexMath.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libIexMath.%d.dylib" % lib_version[0]
+
+def IexMathName(static=False):
+  return ("IexMath" + (static_lib_suffix if static else lib_suffix))
+
+def IexMathPath(static=False):
+  name = IexMathName(static)
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
+  return excons.OutputBaseDirectory() + "/lib/" + libname
 
 # Imath
 prjs.append({"name": "Imath" + static_lib_suffix,
@@ -413,12 +451,32 @@ prjs.append({"name": "Imath" + lib_suffix,
              "defs": (["OPENEXR_DLL", "IMATH_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/Imath/*.cpp"),
-             "libs": ["Iex" + lib_suffix]})
+             "libs": [File(IexPath(False))]})
 
 if not lib_suffix:
    prjs[-1]["version"] = lib_version_str
    prjs[-1]["soname"] = "libImath.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libImath.%d.dylib" % lib_version[0]
+
+def ImathName(static=False):
+  return ("Imath" + (static_lib_suffix if static else lib_suffix))
+
+def ImathPath(static=False):
+  name = ImathName(static)
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
+  return excons.OutputBaseDirectory() + "/lib/" + libname
+
+def RequireImath(env, static=False):
+  if not static:
+    env.Append(CPPDEFINES=["OPENEXR_DLL"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  excons.Link(env, ImathPath(static), static=static, force=True, silent=True)
+  excons.Link(env, IexMathPath(static), static=static, force=True, silent=True)
+  excons.Link(env, IexPath(static), static=static, force=True, silent=True)
+  excons.Link(env, HalfPath(static), static=static, force=True, silent=True)
 
 # IlmThread
 prjs.append({"name": "IlmThread" + static_lib_suffix,
@@ -436,12 +494,30 @@ prjs.append({"name": "IlmThread" + lib_suffix,
              "defs": (["OPENEXR_DLL", "ILMTHREAD_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": ilmthread_srcs,
-             "libs": ["Iex" + lib_suffix]})
+             "libs": [File(IexPath(False))]})
 
 if not lib_suffix:
    prjs[-1]["version"] = lib_version_str
    prjs[-1]["soname"] = "libIlmThread.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libIlmThread.%d.dylib" % lib_version[0]
+
+def IlmThreadName(static=False):
+  return ("IlmThread" + (static_lib_suffix if static else lib_suffix))
+
+def IlmThreadPath(static=False):
+  name = IlmThreadName(static)
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
+  return excons.OutputBaseDirectory() + "/lib/" + libname
+
+def RequireIlmThread(env, static=False):
+  if not static:
+    env.Append(CPPDEFINES=["OPENEXR_DLL"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  excons.Link(env, IlmThreadPath(static), static=static, force=True, silent=True)
+  excons.Link(env, IexPath(static), static=static, force=True, silent=True)
 
 # IlmImf
 prjs.append({"name": "b44ExpLogTable",
@@ -451,9 +527,9 @@ prjs.append({"name": "b44ExpLogTable",
              "symvis": "default",
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ["OpenEXR/IlmImf/b44ExpLogTable.cpp"],
-             "staticlibs": ["IlmThread" + static_lib_suffix,
-                            "Iex" + static_lib_suffix,
-                            "Half" + static_lib_suffix],
+             "libs": [File(IlmThreadPath(True)),
+                      File(IexPath(True)),
+                      File(HalfPath(True))],
              "custom": [threads.Require]})
 
 prjs.append({"name": "dwaLookups",
@@ -463,9 +539,9 @@ prjs.append({"name": "dwaLookups",
              "symvis": "default",
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ["OpenEXR/IlmImf/dwaLookups.cpp"],
-             "staticlibs": ["IlmThread" + static_lib_suffix,
-                            "Iex" + static_lib_suffix,
-                            "Half" + static_lib_suffix],
+             "libs": [File(IlmThreadPath(True)),
+                      File(IexPath(True)),
+                      File(HalfPath(True))],
              "custom": [threads.Require]})
 
 prjs.append({"name": "IlmImf" + static_lib_suffix,
@@ -477,10 +553,7 @@ prjs.append({"name": "IlmImf" + static_lib_suffix,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ilmimf_srcs,
              "srcdeps": {"OpenEXR/IlmImf/ImfB44Compressor.cpp": b44h,
-                         "OpenEXR/IlmImf/ImfDwaCompressor.cpp": dwah + zlibDeps,
-                         "OpenEXR/IlmImf/ImfPxr24Compressor.cpp": zlibDeps,
-                         "OpenEXR/IlmImf/ImfZip.cpp": zlibDeps,
-                         "OpenEXR/IlmImf/ImfZipCompressor.cpp": zlibDeps},
+                         "OpenEXR/IlmImf/ImfDwaCompressor.cpp": dwah},
              "custom": [zlibRequire]})
 
 prjs.append({"name": "IlmImf" + lib_suffix,
@@ -491,20 +564,39 @@ prjs.append({"name": "IlmImf" + lib_suffix,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ilmimf_srcs,
              "srcdeps": {"OpenEXR/IlmImf/ImfB44Compressor.cpp": b44h,
-                         "OpenEXR/IlmImf/ImfDwaCompressor.cpp": dwah + zlibDeps,
-                         "OpenEXR/IlmImf/ImfPxr24Compressor.cpp": zlibDeps,
-                         "OpenEXR/IlmImf/ImfZip.cpp": zlibDeps,
-                         "OpenEXR/IlmImf/ImfZipCompressor.cpp": zlibDeps},
-             "libs": ["IlmThread" + lib_suffix,
-                      "Imath" + lib_suffix,
-                      "Iex" + lib_suffix,
-                      "Half" + lib_suffix],
+                         "OpenEXR/IlmImf/ImfDwaCompressor.cpp": dwah},
+             "libs": [File(IlmThreadPath(False)),
+                      File(ImathPath(False)),
+                      File(IexPath(False)),
+                      File(HalfPath(False))],
              "custom": [threads.Require, zlibRequire]})
 
 if not lib_suffix:
    prjs[-1]["version"] = lib_version_str
    prjs[-1]["soname"] = "libIlmImf.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libIlmImf.%d.dylib" % lib_version[0]
+
+def IlmImfName(static=False):
+  return ("IlmImf" + (static_lib_suffix if static else lib_suffix))
+
+def IlmImfPath(static=False):
+  name = IlmImfName(static)
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
+  return excons.OutputBaseDirectory() + "/lib/" + libname
+
+def RequireIlmImf(env, static=False):
+  if not static:
+    env.Append(CPPDEFINES=["OPENEXR_DLL"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  excons.Link(env, IlmImfPath(static), static=static, force=True, silent=True)
+  excons.Link(env, IlmThreadPath(static), static=static, force=True, silent=True)
+  excons.Link(env, ImathPath(static), static=static, force=True, silent=True)
+  excons.Link(env, IexMathPath(static), static=static, force=True, silent=True)
+  excons.Link(env, IexPath(static), static=static, force=True, silent=True)
+  excons.Link(env, HalfPath(static), static=static, force=True, silent=True)
 
 # IlmImfUtil
 prjs.append({"name": "IlmImfUtil" + static_lib_suffix,
@@ -515,8 +607,7 @@ prjs.append({"name": "IlmImfUtil" + static_lib_suffix,
              "defs": openexr_defs,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfUtil/*.cpp"),
-             "custom": [zlibRequire],
-             "deps": ["IlmImf" + static_lib_suffix]})
+             "custom": [zlibRequire]})
 
 prjs.append({"name": "IlmImfUtil" + lib_suffix,
              "type": "sharedlib",
@@ -525,18 +616,28 @@ prjs.append({"name": "IlmImfUtil" + lib_suffix,
              "defs": openexr_defs + (["OPENEXR_DLL", "ILMIMF_EXPORTS"] if sys.platform == "win32" else []),
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfUtil/*.cpp"),
-             "libs": ["IlmImf" + lib_suffix,
-                      "IlmThread" + lib_suffix,
-                      "Imath" + lib_suffix,
-                      "Iex" + lib_suffix,
-                      "Half" + lib_suffix],
-             "custom": [threads.Require, zlibRequire],
-             "deps": ["IlmImf" + lib_suffix]})
+             "libs": [File(IlmImfPath(False)),
+                      File(IlmThreadPath(False)),
+                      File(ImathPath(False)),
+                      File(IexPath(False)),
+                      File(HalfPath(False))],
+             "custom": [threads.Require, zlibRequire]})
 
 if not lib_suffix:
    prjs[-1]["version"] = lib_version_str
    prjs[-1]["soname"] = "libIlmImfUtil.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libIlmImfUtil.%d.dylib" % lib_version[0]
+
+def IlmImfUtilName(static=False):
+  return ("IlmImfUtil" + (static_lib_suffix if static else lib_suffix))
+
+def IlmImfUtilPath(static=False):
+  name = IlmImfUtilName(static)
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
+  return excons.OutputBaseDirectory() + "/lib/" + libname
 
 # Python
 prjs.append({"name": "PyIex" + static_lib_suffix,
@@ -551,6 +652,17 @@ prjs.append({"name": "PyIex" + static_lib_suffix,
              "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
+def PyIexName():
+  return ("PyIex" + static_lib_suffix)
+
+def PyIexPath():
+  name = PyIexName()
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + ".a"
+  return excons.OutputBaseDirectory() + "/lib/python/" + python.Version() + "/" + libname
+
 prjs.append({"name": "PyImath" + static_lib_suffix,
              "type": "staticlib",
              "desc": "Imath python helper library",
@@ -563,6 +675,17 @@ prjs.append({"name": "PyImath" + static_lib_suffix,
              "srcs": pyimath_srcs,
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
+def PyImathName():
+  return ("PyImath" + static_lib_suffix)
+
+def PyImathPath():
+  name = PyImathName()
+  if sys.platform == "win32":
+    libname = name + ".lib"
+  else:
+    libname = "lib" + name + ".a"
+  return excons.OutputBaseDirectory() + "/lib/python/" + python.Version() + "/" + libname
+
 prjs.append({"name": "iexmodule",
              "type": "dynamicmodule",
              "desc": "Iex library python bindings",
@@ -573,9 +696,8 @@ prjs.append({"name": "iexmodule",
              "defs": pydefs,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyIex/iexmodule.cpp"],
-             "libdirs": [excons.OutputBaseDirectory() + "/lib/python/" + python.Version()],
-             "staticlibs": ["PyIex" + static_lib_suffix,
-                            "Iex" + static_lib_suffix],
+             "libs": [File(PyIexPath()),
+                      File(IexPath(True))],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
 prjs.append({"name": "imathmodule",
@@ -590,12 +712,11 @@ prjs.append({"name": "imathmodule",
              "srcs": ["PyIlmBase/PyImath/imathmodule.cpp",
                       "PyIlmBase/PyImath/PyImathFun.cpp",
                       "PyIlmBase/PyImath/PyImathBasicTypes.cpp"],
-             "libdirs": [excons.OutputBaseDirectory() + "/lib/python/" + python.Version()],
-             "staticlibs": ["PyImath" + static_lib_suffix,
-                            "PyIex" + static_lib_suffix,
-                            "IexMath" + static_lib_suffix,
-                            "Imath" + static_lib_suffix,
-                            "Iex" + static_lib_suffix],
+             "libs": [File(PyImathPath()),
+                      File(PyIexPath()),
+                      File(IexMathPath(True)),
+                      File(ImathPath(True)),
+                      File(IexPath(True))],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
 # Command line tools
@@ -608,11 +729,11 @@ for f in excons.glob("OpenEXR/exr*/CMakeLists.txt"):
                 "symvis": "default",
                 "incdirs": [d] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
                 "srcs": excons.glob(d+"/*.cpp"),
-                "staticlibs": ["IlmImf" + static_lib_suffix,
-                               "IlmThread" + static_lib_suffix,
-                               "Imath" + static_lib_suffix,
-                               "Iex" + static_lib_suffix,
-                               "Half" + static_lib_suffix],
+                "libs": [File(IlmImfPath(True)),
+                         File(IlmThreadPath(True)),
+                         File(ImathPath(True)),
+                         File(IexPath(True)),
+                         File(HalfPath(True))],
                 "custom": [threads.Require, zlibRequire]})
 
 # Tests
@@ -622,7 +743,7 @@ prjs.append({"name": "HalfTest",
              "symvis": "default",
              "incdirs": ["IlmBase/HalfTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/HalfTest/*.cpp"),
-             "staticlibs": ["Half" + static_lib_suffix]})
+             "libs": [File(HalfPath(True))]})
 
 prjs.append({"name": "IexTest",
              "type": "program",
@@ -630,7 +751,7 @@ prjs.append({"name": "IexTest",
              "symvis": "default",
              "incdirs": ["IlmBase/IexTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/IexTest/*.cpp"),
-             "staticlibs": ["Iex" + static_lib_suffix]})
+             "libs": [File(IexPath(True))]})
 
 prjs.append({"name": "ImathTest",
              "type": "program",
@@ -638,8 +759,8 @@ prjs.append({"name": "ImathTest",
              "symvis": "default",
              "incdirs": ["IlmBase/ImathTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/ImathTest/*.cpp"),
-             "staticlibs": ["Imath" + static_lib_suffix,
-                            "Iex" + static_lib_suffix]})
+             "libs": [File(ImathPath(True)),
+                      File(IexPath(True))]})
 
 prjs.append({"name": "IlmImfTest",
              "type": "program",
@@ -648,11 +769,11 @@ prjs.append({"name": "IlmImfTest",
              "symvis": "default",
              "incdirs": ["OpenEXR/IlmImfTest"] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfTest/*.cpp"),
-             "staticlibs": ["IlmImf" + static_lib_suffix,
-                            "IlmThread" + static_lib_suffix,
-                            "Imath" + static_lib_suffix,
-                            "Iex" + static_lib_suffix,
-                            "Half" + static_lib_suffix],
+             "libs": [File(IlmImfPath(True)),
+                      File(IlmThreadPath(True)),
+                      File(ImathPath(True)),
+                      File(IexPath(True)),
+                      File(HalfPath(True))],
              "custom": [threads.Require, zlibRequire]})
 
 prjs.append({"name": "IlmImfUtilTest",
@@ -662,12 +783,12 @@ prjs.append({"name": "IlmImfUtilTest",
              "symvis": "default",
              "incdirs": ["OpenEXR/IlmImfUtilTest"] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfUtilTest/*.cpp"),
-             "staticlibs": ["IlmImfUtil" + static_lib_suffix,
-                            "IlmImf" + static_lib_suffix,
-                            "IlmThread" + static_lib_suffix,
-                            "Imath" + static_lib_suffix,
-                            "Iex" + static_lib_suffix,
-                            "Half" + static_lib_suffix],
+             "libs": [File(IlmImfUtilPath(True)),
+                      File(IlmImfPath(True)),
+                      File(IlmThreadPath(True)),
+                      File(ImathPath(True)),
+                      File(IexPath(True)),
+                      File(HalfPath(True))],
              "custom": [threads.Require, zlibRequire]})
 
 build_opts = """OPENEXR OPTIONS
@@ -755,108 +876,4 @@ env.Alias("openexr-tests", [tgts["HalfTest"],
                             tgts["IlmImfTest"],
                             tgts["IlmImfUtilTest"]])
 
-
-def HalfName(static=False):
-  return ("Half" + (static_lib_suffix if static else lib_suffix))
-
-def HalfPath(static=False):
-  name = HalfName(static)
-  if sys.platform == "win32":
-    libname = name + ".lib"
-  else:
-    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
-  return excons.OutputBaseDirectory() + "/lib/" + libname
-
-def RequireHalf(env, static=False):
-  if not static:
-    env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
-  env.Append(LIBPATH=[excons.OutputBaseDirectory() + "/lib"])
-  excons.Link(env, HalfName(static), static=static, force=True, silent=True)
-
-def IexName(static=False):
-  return ("Iex" + (static_lib_suffix if static else lib_suffix))
-
-def IexPath(static=False):
-  name = IexName(static)
-  if sys.platform == "win32":
-    libname = name + ".lib"
-  else:
-    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
-  return excons.OutputBaseDirectory() + "/lib/" + libname
-
-def IexMathName(static=False):
-  return ("IexMath" + (static_lib_suffix if static else lib_suffix))
-
-def IexMathPath(static=False):
-  name = IexMathName(static)
-  if sys.platform == "win32":
-    libname = name + ".lib"
-  else:
-    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
-  return excons.OutputBaseDirectory() + "/lib/" + libname
-
-def ImathName(static=False):
-  return ("Imath" + (static_lib_suffix if static else lib_suffix))
-
-def ImathPath(static=False):
-  name = ImathName(static)
-  if sys.platform == "win32":
-    libname = name + ".lib"
-  else:
-    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
-  return excons.OutputBaseDirectory() + "/lib/" + libname
-
-def RequireImath(env, static=False):
-  if not static:
-    env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
-  env.Append(LIBPATH=[excons.OutputBaseDirectory() + "/lib"])
-  excons.Link(env, ImathName(static), static=static, force=True, silent=True)
-  excons.Link(env, IexMathName(static), static=static, force=True, silent=True)
-  excons.Link(env, IexName(static), static=static, force=True, silent=True)
-  excons.Link(env, HalfName(static), static=static, force=True, silent=True)
-
-def IlmThreadName(static=False):
-  return ("IlmThread" + (static_lib_suffix if static else lib_suffix))
-
-def IlmThreadPath(static=False):
-  name = IlmThreadName(static)
-  if sys.platform == "win32":
-    libname = name + ".lib"
-  else:
-    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
-  return excons.OutputBaseDirectory() + "/lib/" + libname
-
-def RequireIlmThread(env, static=False):
-  if not static:
-    env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
-  env.Append(LIBPATH=[excons.OutputBaseDirectory() + "/lib"])
-  excons.Link(env, IlmThreadName(static), static=static, force=True, silent=True)
-  excons.Link(env, IexName(static), static=static, force=True, silent=True)
-
-def IlmImfName(static=False):
-  return ("IlmImf" + (static_lib_suffix if static else lib_suffix))
-
-def IlmImfPath(static=False):
-  name = IlmImfName(static)
-  if sys.platform == "win32":
-    libname = name + ".lib"
-  else:
-    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
-  return excons.OutputBaseDirectory() + "/lib/" + libname
-
-def RequireIlmImf(env, static=False):
-  if not static:
-    env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
-  env.Append(LIBPATH=[excons.OutputBaseDirectory() + "/lib"])
-  excons.Link(env, IlmImfName(static), static=static, force=True, silent=True)
-  excons.Link(env, IlmThreadName(static), static=static, force=True, silent=True)
-  excons.Link(env, ImathName(static), static=static, force=True, silent=True)
-  excons.Link(env, IexMathName(static), static=static, force=True, silent=True)
-  excons.Link(env, IexName(static), static=static, force=True, silent=True)
-  excons.Link(env, HalfName(static), static=static, force=True, silent=True)
-
-Export("HalfName HalfPath RequireHalf IexName IexPath IexMathName IexMathPath ImathName ImathPath RequireImath IlmThreadName IlmThreadPath RequireIlmThread IlmImfName IlmImfPath RequireIlmImf")
+Export("HalfName HalfPath RequireHalf IexName IexPath IexMathName IexMathPath ImathName ImathPath RequireImath IlmThreadName IlmThreadPath RequireIlmThread IlmImfName IlmImfPath RequireIlmImf IlmImfUtilName IlmImfUtilPath")
