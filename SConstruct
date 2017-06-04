@@ -652,7 +652,7 @@ if not lib_suffix:
 # Python
 
 def PyIexName():
-  name = "PyIex"
+  name = "PyIex" + lib_suffix
   if sys.platform == "win32":
     name = "lib" + name
   return name
@@ -666,7 +666,7 @@ def PyIexPath():
   return excons.OutputBaseDirectory() + "/lib/python/" + python.Version() + "/" + libname
 
 def PyImathName():
-  name = "PyImath"
+  name = "PyImath" + lib_suffix
   if sys.platform == "win32":
     name = "lib" + name
   return name
