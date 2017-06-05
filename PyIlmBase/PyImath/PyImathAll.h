@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2001-2011, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 1998-2011, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -32,12 +32,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////
 
-#include <Python.h>
-#include <boost/python.hpp>
-#include <PyIexAll.h>
+#ifndef _PyImathAll_h_
+#define _PyImathAll_h_
 
-BOOST_PYTHON_MODULE(iex)
-{
-   PyIex::register_all();
+#include <PyImathExport.h>
+
+namespace PyImath {
+
+PYIMATH_EXPORT void register_all();
+
 }
 
+#endif

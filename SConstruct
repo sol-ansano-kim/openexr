@@ -295,11 +295,19 @@ ilmimfutil_headers = env.Install(out_headers_dir, excons.glob("OpenEXR/IlmImfUti
 
 pyiex_headers = env.Install(out_headers_dir, excons.glob("PyIlmBase/PyIex/*.h"))
 
+pyiex_all_srcs = excons.glob("PyIlmBase/PyIex/*.cpp")
+
+def pyiex_filter(x):
+   name = os.path.splitext(os.path.basename(x))[0]
+   return (name not in ["iexmodule"])
+
+pyiex_srcs = filter(pyiex_filter, pyiex_all_srcs)
+
 pyimath_headers = env.Install(out_headers_dir, excons.glob("PyIlmBase/PyImath/*.h"))
 
 def pyimath_filter(x):
    name = os.path.splitext(os.path.basename(x))[0]
-   return (name not in ["imathmodule", "PyImathFun", "PyImathBasicTypes", "PyImathM44Array"])
+   return (name not in ["imathmodule"])
 
 pyimath_all_srcs = excons.glob("PyIlmBase/PyImath/*.cpp")
 
@@ -688,7 +696,7 @@ prjs.append({"name": PyIexName(),
              "bldprefix": "python" + python.Version(),
              "defs": ["PYIEX_EXPORTS"] + pydefs,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
-             "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
+             "srcs": pyiex_srcs,
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
 prjs.append({"name": PyImathName(),
