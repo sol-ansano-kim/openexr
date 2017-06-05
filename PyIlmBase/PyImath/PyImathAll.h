@@ -32,12 +32,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////
 
-#include <Python.h>
-#include <boost/python.hpp>
-#include <PyIexAll.h>
+#ifndef PYIMATHALL_H
+#define PYIMATHALL_H
 
-BOOST_PYTHON_MODULE(iex)
-{
-   PyIex::register_all();
+#include <PyImathExport.h>
+
+namespace PyImath {
+
+PYIMATH_EXPORT void register_all();
+
 }
 
+#endif

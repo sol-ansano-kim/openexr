@@ -20,6 +20,7 @@ lib_suffix = excons.GetArgument("openexr-suffix", "-2_2")
 #static_lib_suffix = lib_suffix + excons.GetArgument("openexr-static-suffix", "_s")
 namespace_version = (excons.GetArgument("openexr-namespace-version", 1, int) != 0)
 zlib_win_api = (excons.GetArgument("openexr-zlib-winapi", 0, int) != 0)
+pyilmbase_static = (excons.GetArgument("ilmbase-python-staticlibs", 1, int) != 0)
 have_gcc_include_asm_avx = False
 have_sysconf_nprocessors_onln = False
 
@@ -295,17 +296,28 @@ ilmimfutil_headers = env.Install(out_headers_dir, excons.glob("OpenEXR/IlmImfUti
 
 pyiex_headers = env.Install(out_headers_dir, excons.glob("PyIlmBase/PyIex/*.h"))
 
+def pyiex_filter(x):
+   name = os.path.splitext(os.path.basename(x))[0]
+   return (name not in ["iexmodule"])
+
+pyiex_all_srcs = excons.glob("PyIlmBase/PyIex/*.cpp")
+
+pyiex_srcs = filter(pyiex_filter, pyiex_all_srcs)
+
 pyimath_headers = env.Install(out_headers_dir, excons.glob("PyIlmBase/PyImath/*.h"))
 
 def pyimath_filter(x):
    name = os.path.splitext(os.path.basename(x))[0]
-   return (name not in ["imathmodule", "PyImathFun", "PyImathBasicTypes", "PyImathM44Array"])
+   return (name not in ["imathmodule", "PyImathM44Array"])
 
 pyimath_all_srcs = excons.glob("PyIlmBase/PyImath/*.cpp")
 
 pyimath_srcs = filter(pyimath_filter, pyimath_all_srcs)
 
-pydefs = (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else ["PLATFORM_VISIBILITY_AVAILABLE"])
+#pydefs = (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else ["PLATFORM_VISIBILITY_AVAILABLE"])
+pydefs = []
+if sys.platform != "win32":
+   pydefs.append("PLATFORM_VISIBILITY_AVAILABLE")
 
 prjs = []
 
@@ -651,57 +663,96 @@ if not lib_suffix:
 
 # Python
 
-def PyIexName():
+def PyIexName(static=False):
   name = "PyIex" + lib_suffix
-  if sys.platform == "win32":
+  if sys.platform == "win32" and static:
     name = "lib" + name
   return name
 
-def PyIexPath():
+def PyIexPath(static=False):
   name = PyIexName()
   if sys.platform == "win32":
     libname = name + ".lib"
   else:
-    libname = "lib" + name + ".a"
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
   return excons.OutputBaseDirectory() + "/lib/python/" + python.Version() + "/" + libname
 
-def PyImathName():
+def PyImathName(static=False):
   name = "PyImath" + lib_suffix
-  if sys.platform == "win32":
+  if sys.platform == "win32" and static:
     name = "lib" + name
   return name
 
-def PyImathPath():
+def PyImathPath(static=False):
   name = PyImathName()
   if sys.platform == "win32":
     libname = name + ".lib"
   else:
-    libname = "lib" + name + ".a"
+    libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
   return excons.OutputBaseDirectory() + "/lib/python/" + python.Version() + "/" + libname
 
-prjs.append({"name": PyIexName(),
+prjs.append({"name": PyIexName(True),
              "type": "staticlib",
              "desc": "Iex python helper library",
              "symvis": "default",
-             "alias": "PyIex",
+             "alias": "PyIex-static",
+             "prefix": "python/" + python.Version(),
+             "bldprefix": "python" + python.Version(),
+             "defs": pydefs + ["PYIEX_EXPORTS"] + (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else []),
+             "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
+             "srcs": pyiex_srcs,
+             "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
+
+prjs.append({"name": PyIexName(False),
+             "type": "sharedlib",
+             "desc": "Iex python helper library",
+             "alias": "PyIex-shared",
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
              "defs": ["PYIEX_EXPORTS"] + pydefs,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
-             "srcs": ["PyIlmBase/PyIex/PyIex.cpp"],
+             "srcs": pyiex_srcs,
+             "libs": [File(IexMathPath(False)),
+                      File(IexPath(False))],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
-prjs.append({"name": PyImathName(),
+if not lib_suffix:
+   prjs[-1]["version"] = lib_version_str
+   prjs[-1]["soname"] = "libPyIex.so.%d" % lib_version[0]
+   prjs[-1]["install_name"] = "libPyIex.%d.dylib" % lib_version[0]
+
+prjs.append({"name": PyImathName(True),
              "type": "staticlib",
              "desc": "Imath python helper library",
              "symvis": "default",
-             "alias": "PyImath",
+             "alias": "PyImath-static",
+             "prefix": "python/" + python.Version(),
+             "bldprefix": "python" + python.Version(),
+             "defs": pydefs + ["PYIMATH_EXPORTS"] + (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else []),
+             "incdirs": [out_headers_dir],
+             "srcs": pyimath_srcs,
+             "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
+
+prjs.append({"name": PyImathName(False),
+             "type": "sharedlib",
+             "desc": "Imath python helper library",
+             "symvis": "default",
+             "alias": "PyImath-shared",
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
              "defs": ["PYIMATH_EXPORTS"] + pydefs,
              "incdirs": [out_headers_dir],
              "srcs": pyimath_srcs,
+             "libs": [File(PyIexPath(False)),
+                      File(ImathPath(False)),
+                      File(IexMathPath(False)),
+                      File(IexPath(False))],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
+
+if not lib_suffix:
+   prjs[-1]["version"] = lib_version_str
+   prjs[-1]["soname"] = "libPyImath.so.%d" % lib_version[0]
+   prjs[-1]["install_name"] = "libPyImath.%d.dylib" % lib_version[0]
 
 prjs.append({"name": "iexmodule",
              "type": "dynamicmodule",
@@ -709,11 +760,11 @@ prjs.append({"name": "iexmodule",
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "symvis": "default",
              "defs": pydefs,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyIex/iexmodule.cpp"],
-             "libs": [File(PyIexPath()),
+             "libs": [File(PyIexPath(pyilmbase_static)),
+                      File(IexMathPath(True)),
                       File(IexPath(True))],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
@@ -723,14 +774,11 @@ prjs.append({"name": "imathmodule",
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "symvis": "default",
              "defs": pydefs,
              "incdirs": [out_headers_dir],
-             "srcs": ["PyIlmBase/PyImath/imathmodule.cpp",
-                      "PyIlmBase/PyImath/PyImathFun.cpp",
-                      "PyIlmBase/PyImath/PyImathBasicTypes.cpp"],
-             "libs": [File(PyImathPath()),
-                      File(PyIexPath()),
+             "srcs": ["PyIlmBase/PyImath/imathmodule.cpp"],
+             "libs": [File(PyImathPath(pyilmbase_static)),
+                      File(PyIexPath(pyilmbase_static)),
                       File(IexMathPath(True)),
                       File(ImathPath(True)),
                       File(IexPath(True))],
@@ -743,7 +791,6 @@ for f in excons.glob("OpenEXR/exr*/CMakeLists.txt"):
                 "type": "program",
                 "desc": "Command line tool",
                 "defs": openexr_defs,
-                "symvis": "default",
                 "incdirs": [d] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
                 "srcs": excons.glob(d+"/*.cpp"),
                 "libs": [File(IlmImfPath(True)),
@@ -757,7 +804,6 @@ for f in excons.glob("OpenEXR/exr*/CMakeLists.txt"):
 prjs.append({"name": "HalfTest",
              "type": "program",
              "desc": "Half library tests",
-             "symvis": "default",
              "incdirs": ["IlmBase/HalfTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/HalfTest/*.cpp"),
              "libs": [File(HalfPath(True))]})
@@ -765,7 +811,6 @@ prjs.append({"name": "HalfTest",
 prjs.append({"name": "IexTest",
              "type": "program",
              "desc": "Iex library tests",
-             "symvis": "default",
              "incdirs": ["IlmBase/IexTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/IexTest/*.cpp"),
              "libs": [File(IexPath(True))]})
@@ -773,7 +818,6 @@ prjs.append({"name": "IexTest",
 prjs.append({"name": "ImathTest",
              "type": "program",
              "desc": "Imath library tests",
-             "symvis": "default",
              "incdirs": ["IlmBase/ImathTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/ImathTest/*.cpp"),
              "libs": [File(ImathPath(True)),
@@ -783,7 +827,6 @@ prjs.append({"name": "IlmImfTest",
              "type": "program",
              "desc": "IlmImf library tests",
              "defs": openexr_defs,
-             "symvis": "default",
              "incdirs": ["OpenEXR/IlmImfTest"] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfTest/*.cpp"),
              "libs": [File(IlmImfPath(True)),
@@ -797,7 +840,6 @@ prjs.append({"name": "IlmImfUtilTest",
              "type": "program",
              "desc": "IlmImfUtil library tests",
              "defs": openexr_defs,
-             "symvis": "default",
              "incdirs": ["OpenEXR/IlmImfUtilTest"] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfUtilTest/*.cpp"),
              "libs": [File(IlmImfUtilPath(True)),
@@ -813,6 +855,8 @@ prjs.append({"name": "IlmImfUtilTest",
 excons.AddHelpOptions(openexr="""OPENEXR OPTIONS
   openexr-suffix=<str>          : Library suffix                     ["-2_2"]
   openexr-namespace-version=0|1 : Internally use versioned namespace [1]
+  ilmbase-python-staticlibs=0|1 : Link PyIex and PyImath static libs [1]
+                                  for iex and imath python modules
   openexr-zlib-winapi=0|1       : Use zlib win API                   [0]""")
 
 targets_help = {"Half-static": "Half static library",
@@ -829,6 +873,10 @@ targets_help = {"Half-static": "Half static library",
                 "IlmImf-shared": "IlmImf shared library",
                 "IlmImfUtil-static": "IlmImfUtil static library",
                 "IlmImfUtil-shared": "IlmImfUtil shared library",
+                "PyIex-static": "Iex python static library",
+                "PyIex-shared": "Iex python shared library",
+                "PyImath-static": "Imath python static library",
+                "PyImath-shared": "Imath python shared library",
                 "openexr": "All libraries",
                 "openexr-static": "All static libraries",
                 "openexr-shared": "All shared libraries",
@@ -881,6 +929,18 @@ if sameIlmImfUtilName:
 if lib_suffix or not sameIlmImfUtilName:
   targets_help["IlmImfUtil"] = "IlmImfUtil static and shared libraries"
 
+samePyIexName = (PyIexName(True) == PyIexName(False))
+if samePyIexName:
+  targets_help[PyIexName(True)] = "Iex python static and shared libraries"
+if lib_suffix or not samePyIexName:
+  targets_help["PyIex"] = "Iex python static and shared libraries"
+
+samePyImathName = (PyImathName(True) == PyImathName(False))
+if samePyImathName:
+  targets_help[PyImathName(True)] = "Imath python static and shared libraries"
+if lib_suffix or not samePyImathName:
+  targets_help["PyImath"] = "Imath python static and shared libraries"
+
 excons.AddHelpTargets(targets_help)
 
 tgts = excons.DeclareTargets(env, prjs)
@@ -920,6 +980,12 @@ env.Depends(tgts["IlmImfUtil-shared"], ilmimfutil_headers)
 if lib_suffix or not sameIlmImfUtilName:
   env.Alias("IlmImfUtil", ["IlmImfUtil-static", "IlmImfUtil-shared"])
 
+if lib_suffix or not samePyIexName:
+  env.Alias("PyIex", ["PyIex-static", "PyIex-shared"])
+
+if lib_suffix or not samePyImathName:
+  env.Alias("PyImath", ["PyImath-static", "PyImath-shared"])
+
 env.Alias("openexr-static", [tgts["Half-static"],
                              tgts["Iex-static"],
                              tgts["IexMath-static"],
@@ -952,8 +1018,10 @@ env.Alias("ilmbase", ["ilmbase-static", "ilmbase-shared"])
 
 env.Alias("openexr-tools", [tgts[y] for y in filter(lambda x: x.startswith("exr"), tgts.keys())])
 
-env.Alias("ilmbase-python", [tgts["PyIex"],
-                             tgts["PyImath"],
+env.Alias("ilmbase-python", [tgts["PyIex-static"],
+                             tgts["PyIex-shared"],
+                             tgts["PyImath-static"],
+                             tgts["PyImath-shared"],
                              tgts["iexmodule"],
                              tgts["imathmodule"]])
 

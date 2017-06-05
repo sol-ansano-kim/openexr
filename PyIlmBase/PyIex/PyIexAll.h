@@ -32,12 +32,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////
 
-#include <Python.h>
-#include <boost/python.hpp>
-#include <PyIexAll.h>
+#ifndef PYIEXALL_H
+#define PYIEXALL_H
 
-BOOST_PYTHON_MODULE(iex)
-{
-   PyIex::register_all();
+#include <PyIexExport.h>
+
+namespace PyIex {
+
+PYIEX_EXPORT void register_all();
+
 }
 
+#endif
