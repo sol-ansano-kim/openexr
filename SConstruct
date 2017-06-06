@@ -321,7 +321,7 @@ if sys.platform != "win32":
 pymoddefs = []
 if pyilmbase_static:
    pymoddefs.append("PYILMBASE_STATICLIBS")
-if excons.GetArgument("boost-python-static", excons.GetArgument("boost-static", 0, 1), int) != 0:
+if excons.GetArgument("boost-python-static", excons.GetArgument("boost-static", 0, int), int) != 0:
    pymoddefs.append("PYILMBASE_USE_STATIC_BOOST_PYTHON")
 
 prjs = []
