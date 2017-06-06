@@ -850,6 +850,12 @@ prjs.append({"name": "IlmImfUtilTest",
                       File(HalfPath(True))],
              "custom": [threads.Require, zlibRequire]})
 
+prjs.append({"name": "PyIlmBaseTest",
+             "type": "install",
+             "desc": "PyIlmBase tests",
+             "install": {"lib/python/%s" % python.Version(): ["PyIlmBase/PyIexTest/pyIexTest.py",
+                                                              "PyIlmBase/PyImathTest/pyImathTest.py"]}})
+
 # Help setup (scons -h)
 
 excons.AddHelpOptions(openexr="""OPENEXR OPTIONS
@@ -1031,6 +1037,7 @@ env.Alias("openexr-tests", [tgts["HalfTest"],
                             tgts["IexTest"],
                             tgts["ImathTest"],
                             tgts["IlmImfTest"],
-                            tgts["IlmImfUtilTest"]])
+                            tgts["IlmImfUtilTest"],
+                            tgts["PyIlmBaseTest"]])
 
 Export("HalfName HalfPath RequireHalf IexName IexPath IexMathName IexMathPath ImathName ImathPath RequireImath IlmThreadName IlmThreadPath RequireIlmThread IlmImfName IlmImfPath RequireIlmImf IlmImfUtilName IlmImfUtilPath")
