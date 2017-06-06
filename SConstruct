@@ -675,7 +675,7 @@ def PyIexName(static=False):
   return name
 
 def PyIexPath(static=False):
-  name = PyIexName()
+  name = PyIexName(static=static)
   if sys.platform == "win32":
     libname = name + ".lib"
   else:
@@ -689,7 +689,7 @@ def PyImathName(static=False):
   return name
 
 def PyImathPath(static=False):
-  name = PyImathName()
+  name = PyImathName(static=static)
   if sys.platform == "win32":
     libname = name + ".lib"
   else:
@@ -712,6 +712,7 @@ prjs.append({"name": PyIexName(False),
              "type": "sharedlib",
              "desc": "Iex python helper library",
              "alias": "PyIex-shared",
+             "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
              "defs": ["PYIEX_EXPORTS"] + pydefs,
@@ -743,6 +744,7 @@ prjs.append({"name": PyImathName(False),
              "desc": "Imath python helper library",
              "symvis": "default",
              "alias": "PyImath-shared",
+             "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
              "defs": ["PYIMATH_EXPORTS"] + pydefs,
@@ -768,9 +770,8 @@ prjs.append({"name": "iexmodule",
              "defs": pydefs + pymoddefs,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyIex/iexmodule.cpp"],
-             "libs": [File(PyIexPath(pyilmbase_static)),
-                      File(IexMathPath(True)),
-                      File(IexPath(True))],
+             "libs": [File(PyIexPath(pyilmbase_static))] +
+                     [File(IexMathPath(True)), File(IexPath(True))] if pyilmbase_static else [],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
 prjs.append({"name": "imathmodule",
@@ -782,11 +783,8 @@ prjs.append({"name": "imathmodule",
              "defs": pydefs + pymoddefs,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyImath/imathmodule.cpp"],
-             "libs": [File(PyImathPath(pyilmbase_static)),
-                      File(PyIexPath(pyilmbase_static)),
-                      File(IexMathPath(True)),
-                      File(ImathPath(True)),
-                      File(IexPath(True))],
+             "libs": [File(PyImathPath(pyilmbase_static)), File(PyIexPath(pyilmbase_static))] +
+                     [File(IexMathPath(True)), File(ImathPath(True)), File(IexPath(True))] if pyilmbase_static else [],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
 # Command line tools
