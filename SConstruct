@@ -314,10 +314,14 @@ pyimath_all_srcs = excons.glob("PyIlmBase/PyImath/*.cpp")
 
 pyimath_srcs = filter(pyimath_filter, pyimath_all_srcs)
 
-#pydefs = (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else ["PLATFORM_VISIBILITY_AVAILABLE"])
 pydefs = []
 if sys.platform != "win32":
    pydefs.append("PLATFORM_VISIBILITY_AVAILABLE")
+
+pymoddefs = []
+if excons.GetArgument("boost-python-static", excons.GetArgument("boost-static", 0, 1), int) != 0:
+   pymoddefs.append("PYILMBASE_USE_STATIC_BOOST_PYTHON")
+
 
 prjs = []
 
@@ -760,7 +764,7 @@ prjs.append({"name": "iexmodule",
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": pydefs,
+             "defs": pydefs + pymoddefs,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyIex/iexmodule.cpp"],
              "libs": [File(PyIexPath(pyilmbase_static)),
@@ -774,7 +778,7 @@ prjs.append({"name": "imathmodule",
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": pydefs,
+             "defs": pydefs + pymoddefs,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyImath/imathmodule.cpp"],
              "libs": [File(PyImathPath(pyilmbase_static)),

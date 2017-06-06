@@ -36,15 +36,29 @@
 #include <Python.h>
 #include <boost/python.hpp>
 #include <PyImathAll.h>
+#ifdef PYILMBASE_USE_STATIC_BOOST_PYTHON
+#include <PyIexAll.h>
+#endif
 
 using namespace boost::python;
 
 BOOST_PYTHON_MODULE(imath)
 {
+#ifdef PYILMBASE_USE_STATIC_BOOST_PYTHON
+    handle<> iex(borrowed(PyImport_AddModule("iex")));
+    if (PyErr_Occurred()) boost::python::throw_error_already_set();
+    object iexmodule(iex);
+    {
+      scope iexscope(iexmodule);
+      PyIex::register_all();
+    }
+#else
     handle<> iex(PyImport_ImportModule("iex"));
     if (PyErr_Occurred()) boost::python::throw_error_already_set();
-    
+#endif
+
     scope().attr("iex") = iex;
 
     PyImath::register_all();
 }
+
