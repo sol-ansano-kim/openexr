@@ -8007,8 +8007,6 @@ def testFpExceptions():
         print v
     except iex.MathExc:
         pass
-    except RuntimeError:
-        pass
     else:
         assert 0
 
@@ -8267,8 +8265,6 @@ def testSymmetricEigensolve():
         m.symmetricEigensolve()
     except iex.ArgExc:
         pass
-    except RuntimeError:
-        pass
     else:
         assert 0
 
@@ -8306,8 +8302,6 @@ def testSymmetricEigensolve():
     try:
         m.symmetricEigensolve()
     except iex.ArgExc:
-        pass
-    except RuntimeError:
         pass
     else:
         assert 0

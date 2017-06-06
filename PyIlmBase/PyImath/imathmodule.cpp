@@ -36,7 +36,7 @@
 #include <Python.h>
 #include <boost/python.hpp>
 #include <PyImathAll.h>
-#ifdef PYILMBASE_USE_STATIC_BOOST_PYTHON
+#if defined(PYILMBASE_USE_STATIC_BOOST_PYTHON) && defined(PYILMBASE_STATICLIBS)
 #include <PyIexAll.h>
 #endif
 
@@ -44,7 +44,7 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(imath)
 {
-#ifdef PYILMBASE_USE_STATIC_BOOST_PYTHON
+#if defined(PYILMBASE_USE_STATIC_BOOST_PYTHON) && defined(PYILMBASE_STATICLIBS)
     handle<> iex(borrowed(PyImport_AddModule("iex")));
     if (PyErr_Occurred()) boost::python::throw_error_already_set();
     object iexmodule(iex);
