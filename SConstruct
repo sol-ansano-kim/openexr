@@ -761,7 +761,7 @@ if not lib_suffix:
    prjs[-1]["soname"] = "libPyImath.so.%d" % lib_version[0]
    prjs[-1]["install_name"] = "libPyImath.%d.dylib" % lib_version[0]
 
-prjs.append({"name": "iexmodule",
+prjs.append({"name": "iex",
              "type": "dynamicmodule",
              "desc": "Iex library python bindings",
              "ext": python.ModuleExtension(),
@@ -774,7 +774,7 @@ prjs.append({"name": "iexmodule",
                      [File(IexMathPath(True)), File(IexPath(True))] if pyilmbase_static else [],
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
 
-prjs.append({"name": "imathmodule",
+prjs.append({"name": "imath",
              "type": "dynamicmodule",
              "desc": "Imath library python bindings",
              "ext": python.ModuleExtension(),
@@ -1031,8 +1031,8 @@ env.Alias("ilmbase-python", [tgts["PyIex-static"],
                              tgts["PyIex-shared"],
                              tgts["PyImath-static"],
                              tgts["PyImath-shared"],
-                             tgts["iexmodule"],
-                             tgts["imathmodule"]])
+                             tgts["iex"],
+                             tgts["imath"]])
 
 env.Alias("openexr", ["openexr-static", "openexr-shared", "ilmbase-python", "openexr-tools"])
 
