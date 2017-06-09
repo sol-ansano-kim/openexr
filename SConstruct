@@ -351,7 +351,8 @@ def HalfPath(static=False):
 def RequireHalf(env, static=False):
   if not static:
     env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include",
+                      excons.OutputBaseDirectory() + "/include/OpenEXR"])
   excons.Link(env, HalfPath(static), static=static, force=True, silent=True)
 
 prjs.append({"name": "eLut",
@@ -475,7 +476,8 @@ def ImathPath(static=False):
 def RequireImath(env, static=False):
   if not static:
     env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include",
+                      excons.OutputBaseDirectory() + "/include/OpenEXR"])
   excons.Link(env, ImathPath(static), static=static, force=True, silent=True)
   excons.Link(env, IexMathPath(static), static=static, force=True, silent=True)
   excons.Link(env, IexPath(static), static=static, force=True, silent=True)
@@ -521,7 +523,8 @@ def IlmThreadPath(static=False):
 def RequireIlmThread(env, static=False):
   if not static:
     env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include",
+                      excons.OutputBaseDirectory() + "/include/OpenEXR"])
   excons.Link(env, IlmThreadPath(static), static=static, force=True, silent=True)
   excons.Link(env, IexPath(static), static=static, force=True, silent=True)
 
@@ -564,7 +567,8 @@ def IlmImfPath(static=False):
 def RequireIlmImf(env, static=False):
   if not static:
     env.Append(CPPDEFINES=["OPENEXR_DLL"])
-  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include"])
+  env.Append(CPPPATH=[excons.OutputBaseDirectory() + "/include",
+                      excons.OutputBaseDirectory() + "/include/OpenEXR"])
   excons.Link(env, IlmImfPath(static), static=static, force=True, silent=True)
   excons.Link(env, IlmThreadPath(static), static=static, force=True, silent=True)
   excons.Link(env, ImathPath(static), static=static, force=True, silent=True)
@@ -682,6 +686,24 @@ def PyIexPath(static=False):
     libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
   return excons.OutputBaseDirectory() + "/lib/python/" + python.Version() + "/" + libname
 
+def RequirePyIex(env, staticpy=False, staticbase=False):
+  if not staticbase:
+    env.Append(CPPDEFINES=["OPENEXR_DLL"])
+  if staticpy:
+    env.Append(CPPDEFINES=["PYILMBASE_STATICLIBS"])
+    if sys.platform == "win32":
+      env.Append(CPPDEFINES=["PLATFORM_BUILD_STATIC"])
+  if sys.platform != "win32":
+    env.Append(CPPDEFINES=["PLATFORM_VISIBILITY_AVAILABLE"])
+  else:
+    env.Append(CPPDEFINES=["PLATFORM_WINDOWS"])
+  excons.Link(env, PyIexPath(staticpy), static=staticpy, force=True, silent=True)
+  if staticpy:
+    excons.Link(env, IexMathPath(staticbase), static=staticbase, force=True, silent=True)
+    excons.Link(env, IexPath(staticbase), static=staticbase, force=True, silent=True)
+    boost.Require(libs=["python"])
+  python.SoftRequire(env)
+
 def PyImathName(static=False):
   name = "PyImath" + lib_suffix
   if sys.platform == "win32" and static:
@@ -695,6 +717,22 @@ def PyImathPath(static=False):
   else:
     libname = "lib" + name + (".a" if static else excons.SharedLibraryLinkExt())
   return excons.OutputBaseDirectory() + "/lib/python/" + python.Version() + "/" + libname
+
+def RequirePyImath(env, staticpy=False, staticbase=False):
+  if staticpy:
+    env.Append(CPPDEFINES=["PYILMBASE_STATICLIBS"])
+    if sys.platform == "win32":
+      env.Append(CPPDEFINES=["PLATFORM_BUILD_STATIC"])
+  if sys.platform != "win32":
+    env.Append(CPPDEFINES=["PLATFORM_VISIBILITY_AVAILABLE"])
+  else:
+    env.Append(CPPDEFINES=["PLATFORM_WINDOWS"])
+  excons.Link(env, PyImathPath(staticpy), static=staticpy, force=True, silent=True)
+  excons.Link(env, PyIexPath(staticpy), static=staticpy, force=True, silent=True)
+  if staticpy:
+    RequireImath(env, static=staticbase)
+    boost.Require(libs=["python"])(env)
+  python.SoftRequire(env)
 
 prjs.append({"name": PyIexName(True),
              "type": "staticlib",
@@ -1049,4 +1087,4 @@ env.Alias("openexr-tests", [tgts["HalfTest"],
                             tgts["IlmImfUtilTest"],
                             tgts["PyIlmBaseTest"]])
 
-Export("HalfName HalfPath RequireHalf IexName IexPath IexMathName IexMathPath ImathName ImathPath RequireImath IlmThreadName IlmThreadPath RequireIlmThread IlmImfName IlmImfPath RequireIlmImf IlmImfUtilName IlmImfUtilPath")
+Export("HalfName HalfPath RequireHalf IexName IexPath IexMathName IexMathPath ImathName ImathPath RequireImath IlmThreadName IlmThreadPath RequireIlmThread IlmImfName IlmImfPath RequireIlmImf IlmImfUtilName IlmImfUtilPath PyIexName PyIexPath RequirePyIex PyImathName PyImathPath RequirePyImath")
