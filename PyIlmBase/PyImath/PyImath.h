@@ -35,6 +35,7 @@
 #ifndef _PyImath_h_
 #define _PyImath_h_
 
+#include <Python.h>
 #include <ImathVec.h>
 #include <ImathQuat.h>
 #include <PyImathFixedArray.h>
