@@ -281,15 +281,15 @@ if sys.platform != "win32":
    ilmthread_srcs = filter(lambda x: "Win32" not in x, ilmthread_srcs)
 
 
-ilmbase_flags = ""
-if sys.platform == "darwin":
-   ilmbase_flags += " -Wno-sign-compare -Wno-unused-function -Wno-unused-local-typedef"
+nowarn_flags = ""
+if sys.platform != "win32":
+   nowarn_flags += " -Wno-sign-compare -Wno-unused-function -Wno-switch"
+   if sys.platform == "darwin":
+      nowarn_flags += " -Wno-unused-local-typedef -Wno-missing-field-initializers -Wno-tautological-compare"
+   else:
+      nowarn_flags += " -Wno-unused-local-typedefs -Wno-maybe-uninitialized -Wno-type-limits -Wno-return-type -Wno-extra"
 
 openexr_defs = []
-openexr_flags = ""
-if sys.platform == "darwin":
-   openexr_flags += " -Wno-switch -Wno-sign-compare -Wno-unused-function -Wno-tautological-compare"
-
 if zlib_win_api:
    openexr_defs.append("ZLIB_WINAPI")
 
@@ -323,19 +323,16 @@ pyimath_all_srcs = excons.glob("PyIlmBase/PyImath/*.cpp")
 
 pyimath_srcs = filter(pyimath_filter, pyimath_all_srcs)
 
-pydefs = []
-pyflags = ""
+py_defs = []
 if sys.platform != "win32":
-   pydefs.append("PLATFORM_VISIBILITY_AVAILABLE")
-   pydefs.append("BOOST_PYTHON_USE_GCC_SYMBOL_VISIBILITY")
-   if sys.platform == "darwin":
-      pyflags += " -Wno-sign-compare -Wno-missing-field-initializers -Wno-switch"
+   py_defs.append("PLATFORM_VISIBILITY_AVAILABLE")
+   py_defs.append("BOOST_PYTHON_USE_GCC_SYMBOL_VISIBILITY")
 
-pymoddefs = []
+pymod_defs = []
 if pyilmbase_static:
-   pymoddefs.append("PYILMBASE_STATICLIBS")
+   pymod_defs.append("PYILMBASE_STATICLIBS")
 if excons.GetArgument("boost-python-static", excons.GetArgument("boost-static", 0, int), int) != 0:
-   pymoddefs.append("PYILMBASE_USE_STATIC_BOOST_PYTHON")
+   pymod_defs.append("PYILMBASE_USE_STATIC_BOOST_PYTHON")
 
 prjs = []
 
@@ -384,7 +381,7 @@ prjs.append({"name": HalfName(True),
              "type": "staticlib",
              "alias": "Half-static",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": ["IlmBase/Half/half.cpp"]})
 
@@ -392,7 +389,7 @@ prjs.append({"name": HalfName(False),
              "type": "sharedlib",
              "alias": "Half-shared",
              "defs": (["OPENEXR_DLL", "HALF_EXPORTS"] if sys.platform == "win32" else []),
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": ["IlmBase/Half/half.cpp"]})
 
@@ -421,7 +418,7 @@ prjs.append({"name": IexName(True),
              "type": "staticlib",
              "alias": "Iex-static",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/Iex/*.cpp")})
 
@@ -429,7 +426,7 @@ prjs.append({"name": IexName(False),
              "type": "sharedlib",
              "alias": "Iex-shared",
              "defs": (["OPENEXR_DLL", "IEX_EXPORTS"] if sys.platform == "win32" else []),
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/Iex/*.cpp")})
 
@@ -458,7 +455,7 @@ prjs.append({"name": IexMathName(True),
              "type": "staticlib",
              "alias": "IexMath-static",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/IexMath/*.cpp")})
 
@@ -466,7 +463,7 @@ prjs.append({"name": IexMathName(False),
              "type": "sharedlib",
              "alias": "IexMath-shared",
              "defs": (["OPENEXR_DLL", "IEXMATH_EXPORTS"] if sys.platform == "win32" else []),
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/IexMath/*.cpp"),
              "libs": [File(IexPath(False))]})
@@ -507,7 +504,7 @@ prjs.append({"name": ImathName(True),
              "type": "staticlib",
              "alias": "Imath-static",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/Imath/*.cpp")})
 
@@ -515,7 +512,7 @@ prjs.append({"name": ImathName(False),
              "type": "sharedlib",
              "alias": "Imath-shared",
              "defs": (["OPENEXR_DLL", "IMATH_EXPORTS"] if sys.platform == "win32" else []),
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/Imath/*.cpp"),
              "libs": [File(IexPath(False))]})
@@ -553,7 +550,7 @@ prjs.append({"name": IlmThreadName(True),
              "type": "staticlib",
              "alias": "IlmThread-static",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": ilmthread_srcs})
 
@@ -561,7 +558,7 @@ prjs.append({"name": IlmThreadName(False),
              "type": "sharedlib",
              "alias": "IlmThread-shared",
              "defs": (["OPENEXR_DLL", "ILMTHREAD_EXPORTS"] if sys.platform == "win32" else []),
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + configs_incdirs,
              "srcs": ilmthread_srcs,
              "libs": [File(IexPath(False))]})
@@ -604,6 +601,7 @@ prjs.append({"name": "b44ExpLogTable",
              "desc": "IlmImf library header generator",
              "prefix": "generators",
              "symvis": "default",
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ["OpenEXR/IlmImf/b44ExpLogTable.cpp"],
              "libs": [File(IlmThreadPath(True)),
@@ -616,6 +614,7 @@ prjs.append({"name": "dwaLookups",
              "prefix": "generators",
              "desc": "IlmImf library header generator",
              "symvis": "default",
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ["OpenEXR/IlmImf/dwaLookups.cpp"],
              "libs": [File(IlmThreadPath(True)),
@@ -628,7 +627,7 @@ prjs.append({"name": IlmImfName(True),
              "alias": "IlmImf-static",
              "symvis": "default",
              "defs": openexr_defs,
-             "cppflags": openexr_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ilmimf_srcs,
              "custom": [zlibRequire]})
@@ -637,7 +636,7 @@ prjs.append({"name": IlmImfName(False),
              "type": "sharedlib",
              "alias": "IlmImf-shared",
              "defs": openexr_defs + (["OPENEXR_DLL", "ILMIMF_EXPORTS"] if sys.platform == "win32" else []),
-             "cppflags": openexr_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": ilmimf_srcs,
              "libs": [File(IlmThreadPath(False)),
@@ -673,7 +672,7 @@ prjs.append({"name": IlmImfUtilName(True),
              "alias": "IlmImfUtil-static",
              "symvis": "default",
              "defs": openexr_defs,
-             "cppflags": openexr_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfUtil/*.cpp"),
              "custom": [zlibRequire]})
@@ -682,7 +681,7 @@ prjs.append({"name": IlmImfUtilName(False),
              "type": "sharedlib",
              "alias": "IlmImfUtil-shared",
              "defs": openexr_defs + (["OPENEXR_DLL", "ILMIMF_EXPORTS"] if sys.platform == "win32" else []),
-             "cppflags": openexr_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfUtil/*.cpp"),
              "libs": [File(IlmImfPath(False)),
@@ -768,8 +767,8 @@ prjs.append({"name": PyIexName(True),
              "alias": "PyIex-static",
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": pydefs + ["PYIEX_EXPORTS"] + (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else []),
-             "cppflags": pyflags,
+             "defs": py_defs + ["PYIEX_EXPORTS"] + (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else []),
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": pyiex_srcs,
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
@@ -781,8 +780,8 @@ prjs.append({"name": PyIexName(False),
              "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": ["PYIEX_EXPORTS"] + pydefs,
-             "cppflags": pyflags,
+             "defs": ["PYIEX_EXPORTS"] + py_defs,
+             "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": pyiex_srcs,
              "libs": [File(IexMathPath(False)),
@@ -801,8 +800,8 @@ prjs.append({"name": PyImathName(True),
              "alias": "PyImath-static",
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": pydefs + ["PYIMATH_EXPORTS"] + (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else []),
-             "cppflags": pyflags,
+             "defs": py_defs + ["PYIMATH_EXPORTS"] + (["PLATFORM_BUILD_STATIC"] if sys.platform == "win32" else []),
+             "cppflags": nowarn_flags,
              "incdirs": [out_headers_dir],
              "srcs": pyimath_srcs,
              "custom": [python.SoftRequire, boost.Require(libs=["python"])]})
@@ -815,8 +814,8 @@ prjs.append({"name": PyImathName(False),
              "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": ["PYIMATH_EXPORTS"] + pydefs,
-             "cppflags": pyflags,
+             "defs": ["PYIMATH_EXPORTS"] + py_defs,
+             "cppflags": nowarn_flags,
              "incdirs": [out_headers_dir],
              "srcs": pyimath_srcs,
              "libs": [File(PyIexPath(False)),
@@ -839,8 +838,8 @@ prjs.append({"name": iexmodulename,
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": pydefs + pymoddefs,
-             "cppflags": pyflags,
+             "defs": py_defs + pymod_defs,
+             "cppflags": nowarn_flags,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyIex/iexmodule.cpp"],
              "libs": [File(PyIexPath(pyilmbase_static))] +
@@ -856,8 +855,8 @@ prjs.append({"name": imathmodulename,
              "ext": python.ModuleExtension(),
              "prefix": python.ModulePrefix() + "/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": pydefs + pymoddefs,
-             "cppflags": pyflags,
+             "defs": py_defs + pymod_defs,
+             "cppflags": nowarn_flags,
              "incdirs": [out_headers_dir],
              "srcs": ["PyIlmBase/PyImath/imathmodule.cpp"],
              "libs": [File(PyImathPath(pyilmbase_static)), File(PyIexPath(pyilmbase_static))] +
@@ -872,7 +871,7 @@ for f in excons.glob("OpenEXR/exr*/CMakeLists.txt"):
                 "desc": "Command line tool",
                 "symvis": "default",
                 "defs": openexr_defs,
-                "cppflags": openexr_flags,
+                "cppflags": nowarn_flags,
                 "incdirs": [d] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
                 "srcs": excons.glob(d+"/*.cpp"),
                 "libs": [File(IlmImfPath(True)),
@@ -887,7 +886,7 @@ prjs.append({"name": "HalfTest",
              "type": "program",
              "desc": "Half library tests",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ["IlmBase/HalfTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/HalfTest/*.cpp"),
              "libs": [File(HalfPath(True))]})
@@ -896,7 +895,7 @@ prjs.append({"name": "IexTest",
              "type": "program",
              "desc": "Iex library tests",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ["IlmBase/IexTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/IexTest/*.cpp"),
              "libs": [File(IexPath(True))]})
@@ -905,7 +904,7 @@ prjs.append({"name": "ImathTest",
              "type": "program",
              "desc": "Imath library tests",
              "symvis": "default",
-             "cppflags": ilmbase_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ["IlmBase/ImathTest"] + ilmbase_incdirs + configs_incdirs,
              "srcs": excons.glob("IlmBase/ImathTest/*.cpp"),
              "libs": [File(ImathPath(True)),
@@ -916,7 +915,7 @@ prjs.append({"name": "IlmImfTest",
              "desc": "IlmImf library tests",
              "symvis": "default",
              "defs": openexr_defs,
-             "cppflags": openexr_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ["OpenEXR/IlmImfTest"] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfTest/*.cpp"),
              "libs": [File(IlmImfPath(True)),
@@ -931,7 +930,7 @@ prjs.append({"name": "IlmImfUtilTest",
              "desc": "IlmImfUtil library tests",
              "symvis": "default",
              "defs": openexr_defs,
-             "cppflags": openexr_flags,
+             "cppflags": nowarn_flags,
              "incdirs": ["OpenEXR/IlmImfUtilTest"] + ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": excons.glob("OpenEXR/IlmImfUtilTest/*.cpp"),
              "libs": [File(IlmImfUtilPath(True)),
