@@ -31,6 +31,16 @@ OPTION (BUILD_SHARED_LIBS "Build Shared Libraries" ON)
 # Allow the developer to select if Dynamic or Static libraries are built
 OPTION (NAMESPACE_VERSIONING "Namespace Versioning" ON)
 
+OPTION (FORCE_CXX03 "Force CXX03" OFF)
+IF (FORCE_CXX03)
+  ADD_DEFINITIONS ( -std=c++03 )
+ELSE (FORCE_CXX03)
+  # VP18 switches to c++14, so let's do that by default
+  SET(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ ISO Standard")
+  # but switch gnu++14 or other extensions off for portability
+  SET(CMAKE_CXX_EXTENSIONS OFF)
+ENDIF ()
+
 # Setup osx rpathing
 SET (CMAKE_MACOSX_RPATH 1)
 SET (BUILD_WITH_INSTALL_RPATH 1)
@@ -103,6 +113,11 @@ IF (BUILD_SHARED_LIBS)
   ENDIF ()
 ENDIF (BUILD_SHARED_LIBS)
 
+IF (WIN32)
+  SET (RUNTIME_DIR bin)
+ELSE ()
+  SET (RUNTIME_DIR lib)
+ENDIF ()
 
 ADD_SUBDIRECTORY ( Half )
 ADD_SUBDIRECTORY ( Iex )
@@ -123,6 +138,15 @@ ELSE ()
     FILE ( APPEND ${CMAKE_CURRENT_BINARY_DIR}/config/IlmBaseConfig.h "#define HAVE_POSIX_SEMAPHORES 1\n" )
     FILE ( APPEND ${CMAKE_CURRENT_BINARY_DIR}/config/IlmBaseConfig.h "#define ILMBASE_HAVE_CONTROL_REGISTER_SUPPORT 1\n")
   ENDIF ()
+ENDIF ()
+
+IF (FORCE_CXX03)
+  FILE ( APPEND  ${CMAKE_CURRENT_BINARY_DIR}/config/IlmBaseConfig.h "#define ILMBASE_FORCE_CXX03 1\n" )
+ELIF (NOT WIN32)
+  # really only care about c++11 right now for the threading bits, but this can be changed to 14
+  # when needed...
+  # Note that the __cplusplus check is not valid under MSVC
+  FILE ( APPEND  ${CMAKE_CURRENT_BINARY_DIR}/config/IlmBaseConfig.h "#if __cplusplus < 201103L\n# error \"Modern C++ 11/14 not enabled but force cxx03 not set\"\n#endif\n" )
 ENDIF ()
 
 IF (NAMESPACE_VERSIONING)
@@ -158,35 +182,15 @@ IF (NAMESPACE_VERSIONING)
   SET ( ILMBASE_LIBSUFFIX "-${ILMBASE_VERSION_API}" )
 ENDIF ()
 
-SET_TARGET_PROPERTIES ( Half
-  PROPERTIES
-  VERSION 12.0.0
-  SOVERSION 12
-  )
-SET_TARGET_PROPERTIES ( Iex
-  PROPERTIES
-  VERSION 12.0.0
-  SOVERSION 12
-  OUTPUT_NAME "Iex${ILMBASE_LIBSUFFIX}"
-  )
-SET_TARGET_PROPERTIES ( Imath
-  PROPERTIES
-  VERSION 12.0.0
-  SOVERSION 12
-  OUTPUT_NAME "Imath${ILMBASE_LIBSUFFIX}"
-  )
-SET_TARGET_PROPERTIES ( IlmThread
-  PROPERTIES
-  VERSION 12.0.0
-  SOVERSION 12
-  OUTPUT_NAME "IlmThread${ILMBASE_LIBSUFFIX}"
-  )
-SET_TARGET_PROPERTIES ( IexMath
-  PROPERTIES
-  VERSION 12.0.0
-  SOVERSION 12
-  OUTPUT_NAME "IexMath${ILMBASE_LIBSUFFIX}"
-  )
+SET (ILMBASE_LIBRARY_NAMES Half Iex Imath IlmThread IexMath)
+FOREACH (LIBNAME ${ILMBASE_LIBRARY_NAMES})
+  SET_TARGET_PROPERTIES ( ${LIBNAME}
+    PROPERTIES
+    VERSION 12.0.0
+    SOVERSION 12
+    OUTPUT_NAME "${LIBNAME}${ILMBASE_LIBSUFFIX}"
+    )
+ENDFOREACH()
 
 IF ( NOT WIN32 )
   CREATE_LIBTOOL_FILE ( Half /lib )
@@ -195,6 +199,7 @@ IF ( NOT WIN32 )
   CREATE_LIBTOOL_FILE ( Imath /lib )
   CREATE_LIBTOOL_FILE ( IlmThread /lib )
 ENDIF ()
+
 
 # Tests
 
@@ -208,7 +213,6 @@ INSTALL ( FILES
   ${CMAKE_CURRENT_BINARY_DIR}/config/IlmBaseConfig.h
   DESTINATION
   include/OpenEXR
-
 )
 
 FILE ( WRITE ${CMAKE_BINARY_DIR}/IlmBase.pc "prefix=${CMAKE_INSTALL_PREFIX}\n" )
@@ -220,7 +224,7 @@ OpenEXR_includedir=\${prefix}/include/OpenEXR
 Name: IlmBase
 Description: Base math and exception libraries
 Version: ${ILMBASE_VERSION}
-Libs: -L\${libdir} -lImath${ILMBASE_LIBSUFFIX} -lIexMath${ILMBASE_LIBSUFFIX} -lHalf -lIex${ILMBASE_LIBSUFFIX} -lIlmThread${ILMBASE_LIBSUFFIX} -pthread
+Libs: -L\${libdir} -lImath${ILMBASE_LIBSUFFIX} -lIexMath${ILMBASE_LIBSUFFIX} -lHalf${ILMBASE_LIBSUFFIX} -lIex${ILMBASE_LIBSUFFIX} -lIlmThread${ILMBASE_LIBSUFFIX} -pthread
 Cflags: -pthread -I\${OpenEXR_includedir}
 ")
 
@@ -229,3 +233,4 @@ INSTALL ( FILES
   DESTINATION
   lib/pkgconfig
 )
+

@@ -50,6 +50,21 @@
 #include <exception>
 #include <sstream>
 
+//----------------------------------------------------------
+//
+//	C++11 deprecates the specification of dynamic exception throw and
+//	then changes this again in C++17. for convenience, put a macro
+//	here to enable existing places to specify the exception list, and
+//	have it done so appropriately based on the language features
+//	active.
+//
+//----------------------------------------------------------
+#ifdef ILMBASE_FORCE_CXX03
+#   define IEX_THROW_SPEC(...) throw (__VA_ARGS__)
+#else
+#   define IEX_THROW_SPEC(...)
+#endif
+
 IEX_INTERNAL_NAMESPACE_HEADER_ENTER
 
 
@@ -122,15 +137,15 @@ class BaseExc: public std::string, public std::exception
 // class derived directly or indirectly from BaseExc:
 //-----------------------------------------------------
 
-#define DEFINE_EXC_EXP(exp, name, base)                         \
-    class exp name: public base                                 \
-    {                                                           \
-      public:                                                   \
-        name()                         throw(): base (0)    {}  \
-        name (const char* text)        throw(): base (text) {}  \
-        name (const std::string &text) throw(): base (text) {}  \
-        name (std::stringstream &text) throw(): base (text) {}  \
-        ~name() throw() { }                                     \
+#define DEFINE_EXC_EXP(exp, name, base)                             \
+    class name: public base                                         \
+    {                                                               \
+      public:                                                       \
+        exp name()                         throw(): base (0)    {}  \
+        exp name (const char* text)        throw(): base (text) {}  \
+        exp name (const std::string &text) throw(): base (text) {}  \
+        exp name (std::stringstream &text) throw(): base (text) {}  \
+        exp ~name() throw() { }                                     \
     };
 
 // For backward compatibility.
