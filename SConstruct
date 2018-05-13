@@ -10,6 +10,7 @@ import excons.tools.python as python
 import excons.tools.boost as boost
 
 
+ARGUMENTS["use-c++11"] = "1"
 
 env = excons.MakeBaseEnv()
 
