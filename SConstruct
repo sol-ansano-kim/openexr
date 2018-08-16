@@ -17,7 +17,7 @@ env = excons.MakeBaseEnv()
 
 lib_version = (2, 3, 0)
 lib_version_str = "%d.%d.%d" % lib_version
-lib_suffix = excons.GetArgument("openexr-suffix", "-2_2")
+lib_suffix = excons.GetArgument("openexr-suffix", "-%d_%d" % (lib_version[0], lib_version[1]))
 #static_lib_suffix = lib_suffix + excons.GetArgument("openexr-static-suffix", "_s")
 namespace_version = (excons.GetArgument("openexr-namespace-version", 1, int) != 0)
 zlib_win_api = (excons.GetArgument("openexr-zlib-winapi", 0, int) != 0)
