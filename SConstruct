@@ -15,7 +15,7 @@ ARGUMENTS["use-c++11"] = "1"
 env = excons.MakeBaseEnv()
 
 
-lib_version = (2, 2, 0)
+lib_version = (2, 3, 0)
 lib_version_str = "%d.%d.%d" % lib_version
 lib_suffix = excons.GetArgument("openexr-suffix", "-2_2")
 #static_lib_suffix = lib_suffix + excons.GetArgument("openexr-static-suffix", "_s")
