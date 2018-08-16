@@ -101,7 +101,7 @@ class SimdAlignedBuffer64
 
 #if __cplusplus >= 201103L
         SimdAlignedBuffer64(SimdAlignedBuffer64 &&rhs) noexcept
-            : _handle(rhs._handle), _buffer(rhs._buffer)
+            : _buffer(rhs._buffer), _handle(rhs._handle)
         {
             rhs._handle = nullptr;
             rhs._buffer = nullptr;

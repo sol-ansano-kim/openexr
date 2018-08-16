@@ -459,7 +459,7 @@ class NullThreadPoolProvider : public ThreadPoolProvider
 // struct TaskGroup::Data
 //
 
-TaskGroup::Data::Data (): isEmpty (1), numPending (0)
+TaskGroup::Data::Data (): numPending (0), isEmpty (1)
 {
     // empty
 }
@@ -552,10 +552,10 @@ TaskGroup::Data::removeTask ()
 //
 
 ThreadPool::Data::Data ():
-    provUsers (0), provider (NULL)
 #ifdef ILMBASE_FORCE_CXX03
-    , oldprovider (NULL)
+   provUsers (0), provider (NULL), oldprovider (NULL)
 #else
+   provider (NULL), provUsers (0)
 #endif
 {
     // empty
