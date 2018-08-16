@@ -2061,11 +2061,11 @@ def testV2x (Vec):
        assert equal(v.length(), 1, v.baseTypeEpsilon())
        v = Vec(0)
        try:
-           v.normalizeExc()     # This should raise an exception.
+           v.normalizeExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
        
        v = Vec(1, 2)
        v.normalizeNonNull()
@@ -2078,11 +2078,11 @@ def testV2x (Vec):
        assert equal(v.normalizedExc().length(), 1, v.baseTypeEpsilon())
        v = Vec(0)
        try:
-           v.normalizedExc()    # This should raise an exception.
+           v.normalizedExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
        
        v = Vec(1, 2)
        assert equal(v.normalizedNonNull().length(), 1, v.baseTypeEpsilon())
@@ -2098,7 +2098,7 @@ def testV2x (Vec):
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1)
        v.normalizeExc()
@@ -2106,11 +2106,11 @@ def testV2x (Vec):
 
        v = Vec(1, 2)
        try:
-           v.normalizeExc()     # This should raise an exception.
+           v.normalizeExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1)
        v.normalizeNonNull()
@@ -2118,33 +2118,33 @@ def testV2x (Vec):
 
        v = Vec(1, 2)
        try:
-           v.normalizeNonNull() # This should raise an exception.
+           v.normalizeNonNull()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1)
        assert v.normalized().length() == 1
 
        v = Vec(1, 2)
        try:
-           v.normalized()       # This should raise an exception.
+           v.normalized()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1)
        assert v.normalizedExc().length() == 1
 
        v = Vec(1, 2)
        try:
-           v.normalizedExc()    # This should raise an exception.
+           v.normalizedExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1)
        assert v.normalizeNonNull().length() == 1
@@ -2155,7 +2155,7 @@ def testV2x (Vec):
        except:
            pass
        else:
-           assert 0               # We shouldn't get here.
+           assert 0                         # We shouldn't get here.
         
 
     # Projection.
@@ -2243,25 +2243,25 @@ def testV2xArray (Array, Vec, Arrayx):
     a = Array(2)
 
     try:
-        a[-3] = Vec(0)  # This should raise an exception.
+        a[-3] = Vec(0)        # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
         a[3] = Vec(0)   # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     try:
-        a[1] = "a"      # This should raise an exception.
+        a[1] = "a"         # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     # Assignment.
 
@@ -2306,7 +2306,7 @@ def testV2xArray (Array, Vec, Arrayx):
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
     
     
     # Cross products.
@@ -2330,11 +2330,11 @@ def testV2xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a.cross(d)      # This should raise an exception.
+        a.cross(d)        # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Addition.
 
@@ -2373,18 +2373,18 @@ def testV2xArray (Array, Vec, Arrayx):
     c = Array(3)
 
     try:
-        a + c           # This should raise an exception.
+        a + c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a += c          # This should raise an exception.
+        a += c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Subtraction.
 
@@ -2427,18 +2427,18 @@ def testV2xArray (Array, Vec, Arrayx):
     c = Array(3)
 
     try:
-        a - c           # This should raise an exception.
+        a - c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a -= c          # This should raise an exception.
+        a -= c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Negation.
 
@@ -2513,18 +2513,18 @@ def testV2xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a * d           # This should raise an exception.
+        a * d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a *= d          # This should raise an exception.
+        a *= d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Division.
 
@@ -2592,18 +2592,18 @@ def testV2xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a / d           # This should raise an exception.
+        a / d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a /= d          # This should raise an exception.
+        a /= d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Length.
 
@@ -2698,7 +2698,7 @@ def testV3x (Vec):
     assert v[0] == 10 and v[1] == 11 and v[2] == 12
 
     try:
-        v[-4] = 0          # This should raise an exception.
+        v[-4] = 0           # This should raise an exception.
     except:
         pass
     else:
@@ -2712,7 +2712,7 @@ def testV3x (Vec):
         assert 0           # We shouldn't get here.
 
     try:
-        v[1] = "a"         # This should raise an exception.
+        v[1] = "a"           # This should raise an exception.
     except:
         pass
     else:
@@ -2903,11 +2903,11 @@ def testV3x (Vec):
        assert equal(v.length(), 1, v.baseTypeEpsilon())
        v = Vec(0)
        try:
-           v.normalizeExc()     # This should raise an exception.
+           v.normalizeExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
        
        v = Vec(1, 2, 3)
        v.normalizeNonNull()
@@ -2924,7 +2924,7 @@ def testV3x (Vec):
        except:
            pass
        else:
-           assert 0           # We shouldn't get here.
+           assert 0              # We shouldn't get here.
        
        v = Vec(1, 2, 3)
        assert equal(v.normalizedNonNull().length(), 1, v.baseTypeEpsilon())
@@ -2940,7 +2940,7 @@ def testV3x (Vec):
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1, 0)
        v.normalizeExc()
@@ -2948,11 +2948,11 @@ def testV3x (Vec):
 
        v = Vec(1, 2, 3)
        try:
-           v.normalizeExc()     # This should raise an exception.
+           v.normalizeExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1, 0)
        v.normalizeNonNull()
@@ -2960,33 +2960,33 @@ def testV3x (Vec):
 
        v = Vec(1, 2, 3)
        try:
-           v.normalizeNonNull() # This should raise an exception.
+           v.normalizeNonNull()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1, 0)
        assert v.normalized().length() == 1
 
        v = Vec(1, 2, 3)
        try:
-           v.normalized()       # This should raise an exception.
+           v.normalized()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1, 0)
        assert v.normalizedExc().length() == 1
 
        v = Vec(1, 2, 3)
        try:
-           v.normalizedExc()    # This should raise an exception.
+           v.normalizedExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 1, 0)
        assert v.normalizeNonNull().length() == 1
@@ -2997,7 +2997,7 @@ def testV3x (Vec):
        except:
            pass
        else:
-           assert 0               # We shouldn't get here.
+           assert 0                  # We shouldn't get here.
         
     # Projection.
 
@@ -3099,25 +3099,25 @@ def testV3xArray (Array, Vec, Arrayx):
     a = Array(2)
 
     try:
-        a[-3] = Vec(0)  # This should raise an exception.
+        a[-3] = Vec(0)        # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
         a[3] = Vec(0)   # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     try:
-        a[1] = "a"      # This should raise an exception.
+        a[1] = "a"         # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     # Assignment.
 
@@ -3162,7 +3162,7 @@ def testV3xArray (Array, Vec, Arrayx):
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
     
     
     # Cross products.
@@ -3186,11 +3186,11 @@ def testV3xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a.cross(d)      # This should raise an exception.
+        a.cross(d)        # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Addition.
 
@@ -3229,18 +3229,18 @@ def testV3xArray (Array, Vec, Arrayx):
     c = Array(3)
 
     try:
-        a + c           # This should raise an exception.
+        a + c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a += c          # This should raise an exception.
+        a += c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Subtraction.
 
@@ -3279,18 +3279,18 @@ def testV3xArray (Array, Vec, Arrayx):
     c = Array(3)
 
     try:
-        a - c           # This should raise an exception.
+        a - c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a -= c          # This should raise an exception.
+        a -= c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Negation.
 
@@ -3365,18 +3365,18 @@ def testV3xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a * d           # This should raise an exception.
+        a * d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a *= d          # This should raise an exception.
+        a *= d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Division.
 
@@ -3444,18 +3444,18 @@ def testV3xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a / d           # This should raise an exception.
+        a / d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a /= d          # This should raise an exception.
+        a /= d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Length.
 
@@ -3676,7 +3676,7 @@ def testV4x (Vec):
 
     try:
         # TODO why does this have to be -5 and not -4?
-        v[-5] = 0          # This should raise an exception.
+        v[-5] = 0           # This should raise an exception.
     except:
         pass
     else:
@@ -3690,7 +3690,7 @@ def testV4x (Vec):
         assert 0           # We shouldn't get here.
 
     try:
-        v[1] = "a"         # This should raise an exception.
+        v[1] = "a"           # This should raise an exception.
     except:
         pass
     else:
@@ -3871,11 +3871,11 @@ def testV4x (Vec):
        assert equal(v.length(), 1, v.baseTypeEpsilon())
        v = Vec(0)
        try:
-           v.normalizeExc()     # This should raise an exception.
+           v.normalizeExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
        
        v = Vec(1, 2, 3, 4)
        v.normalizeNonNull()
@@ -3892,7 +3892,7 @@ def testV4x (Vec):
        except:
            pass
        else:
-           assert 0           # We shouldn't get here.
+           assert 0              # We shouldn't get here.
        
        v = Vec(1, 2, 3, 4)
        assert equal(v.normalizedNonNull().length(), 1, v.baseTypeEpsilon())
@@ -3908,7 +3908,7 @@ def testV4x (Vec):
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 0, 0, 1)
        v.normalizeExc()
@@ -3916,11 +3916,11 @@ def testV4x (Vec):
 
        v = Vec(1, 2, 3, 4)
        try:
-           v.normalizeExc()     # This should raise an exception.
+           v.normalizeExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 0, 0, 1)
        v.normalizeNonNull()
@@ -3928,33 +3928,33 @@ def testV4x (Vec):
 
        v = Vec(1, 2, 3, 4)
        try:
-           v.normalizeNonNull() # This should raise an exception.
+           v.normalizeNonNull()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 0, 0, 1)
        assert v.normalized().length() == 1
 
        v = Vec(1, 2, 3, 4)
        try:
-           v.normalized()       # This should raise an exception.
+           v.normalized()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 0, 0, 1)
        assert v.normalizedExc().length() == 1
 
        v = Vec(1, 2, 3, 4)
        try:
-           v.normalizedExc()    # This should raise an exception.
+           v.normalizedExc()        # This should raise an exception.
        except:
            pass
        else:
-           assert 0             # We shouldn't get here.
+           assert 0                # We shouldn't get here.
         
        v = Vec(0, 0, 0, 1)
        assert v.normalizeNonNull().length() == 1
@@ -3965,7 +3965,7 @@ def testV4x (Vec):
        except:
            pass
        else:
-           assert 0               # We shouldn't get here.
+           assert 0                  # We shouldn't get here.
         
     # Projection.
 
@@ -4040,25 +4040,25 @@ def testV4xArray (Array, Vec, Arrayx):
     a = Array(2)
 
     try:
-        a[-3] = Vec(0)  # This should raise an exception.
+        a[-3] = Vec(0)        # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
         a[4] = Vec(0)   # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     try:
-        a[1] = "a"      # This should raise an exception.
+        a[1] = "a"         # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     # Assignment.
 
@@ -4103,7 +4103,7 @@ def testV4xArray (Array, Vec, Arrayx):
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
     
     # Addition.
 
@@ -4142,18 +4142,18 @@ def testV4xArray (Array, Vec, Arrayx):
     c = Array(3)
 
     try:
-        a + c           # This should raise an exception.
+        a + c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a += c          # This should raise an exception.
+        a += c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Subtraction.
 
@@ -4192,18 +4192,18 @@ def testV4xArray (Array, Vec, Arrayx):
     c = Array(3)
 
     try:
-        a - c           # This should raise an exception.
+        a - c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a -= c          # This should raise an exception.
+        a -= c                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Negation.
 
@@ -4278,18 +4278,18 @@ def testV4xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a * d           # This should raise an exception.
+        a * d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a *= d          # This should raise an exception.
+        a *= d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Division.
 
@@ -4357,18 +4357,18 @@ def testV4xArray (Array, Vec, Arrayx):
 
     d = Array(3)
     try:
-        a / d           # This should raise an exception.
+        a / d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     try:
-        a /= d          # This should raise an exception.
+        a /= d                # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.   
+        assert 0           # We shouldn't get here.   
 
     # Length.
 
@@ -4482,7 +4482,7 @@ def testV2xV3xConversion (VecA, VecB):
 
     try:
         v = VecA();
-        v1 = VecB (v);     # This should raise an exception.
+        v1 = VecB (v);           # This should raise an exception.
     except:
         pass
     else:
@@ -4585,7 +4585,7 @@ def testShear6x (Shear):
            h[3] == 13 and h[4] == 14 and h[5] == 15
 
     try:
-        h[-7] = 0          # This should raise an exception.
+        h[-7] = 0           # This should raise an exception.
     except:
         pass
     else:
@@ -4599,7 +4599,7 @@ def testShear6x (Shear):
         assert 0           # We shouldn't get here.
 
     try:
-        h[1] = "a"         # This should raise an exception.
+        h[1] = "a"           # This should raise an exception.
     except:
         pass
     else:
@@ -4822,35 +4822,35 @@ def testM33x (Mat, Vec, Vec3):
     assert m[0][0] == 10 and m[1][2] == 11
 
     try:
-        m[-4][0] = 0       # This should raise an exception.
+        m[-4][0] = 0           # This should raise an exception.
     except:
         pass
     else:
         assert 0           # We shouldn't get here.
 
     try:
-        v[3][0] = 0        # This should raise an exception.
+        v[3][0] = 0           # This should raise an exception.
     except:
         pass
     else:
         assert 0           # We shouldn't get here.
 
     try:
-        m[0][-4] = 0       # This should raise an exception.
+        m[0][-4] = 0           # This should raise an exception.
     except:
         pass
     else:
         assert 0           # We shouldn't get here.
 
     try:
-        v[0][3] = 0        # This should raise an exception.
+        v[0][3] = 0           # This should raise an exception.
     except:
         pass
     else:
         assert 0           # We shouldn't get here.
 
     try:
-        v[1] = (1,2,3)     # This should raise an exception.
+        v[1] = (1,2,3)           # This should raise an exception.
     except:
         pass
     else:
@@ -4955,7 +4955,7 @@ def testM33x (Mat, Vec, Vec3):
     assert m3 * m2 == Mat((3,0,0),(0,4,0),(1,2,1))
     assert v * m2 == Vec(2, 4)
     try:
-        m1 * v             # This should raise an exception.
+        m1 * v                   # This should raise an exception.
     except:
         pass
     else:
@@ -5018,7 +5018,7 @@ def testM33x (Mat, Vec, Vec3):
 
     assert m / 2 == Mat(2)
     try:
-        4 / m              # This should raise an exception.
+        4 / m                   # This should raise an exception.
     except:
         pass
     else:
@@ -5100,7 +5100,7 @@ def testM33x (Mat, Vec, Vec3):
     except:
         pass
     else:
-        assert 0                # We shouldn't get here.
+        assert 0                   # We shouldn't get here.
 
     # Shearing.
 
@@ -5147,7 +5147,7 @@ def testM33x (Mat, Vec, Vec3):
     except:
         pass
     else:
-        assert 0                # We shouldn't get here.
+        assert 0                   # We shouldn't get here.
 
     # Translation.
 
@@ -5457,28 +5457,28 @@ def testM44x (Mat, Vec):
     assert m[0][0] == 10 and m[1][2] == 11
 
     try:
-        m[-5][0] = 0       # This should raise an exception.
+        m[-5][0] = 0           # This should raise an exception.
     except:
         pass
     else:
         assert 0           # We shouldn't get here.
 
     try:
-        m[4][0] = 0        # This should raise an exception.
+        m[4][0] = 0           # This should raise an exception.
     except:
         pass
     else:
         assert 0           # We shouldn't get here.
 
     try:
-        m[0][-5] = 0       # This should raise an exception.
+        m[0][-5] = 0           # This should raise an exception.
     except:
         pass
     else:
         assert 0           # We shouldn't get here.
 
     try:
-        m[0][4] = 0        # This should raise an exception.
+        m[0][4] = 0           # This should raise an exception.
     except:
         pass
     else:
@@ -5597,7 +5597,7 @@ def testM44x (Mat, Vec):
     assert m3 * m2 == Mat((3,0,0,0),(0,4,0,0),(0,0,1,0),(1,2,0,1))
     assert v * m2 == Vec(2, 4, 0)
     try:
-        m1 * v             # This should raise an exception.
+        m1 * v                   # This should raise an exception.
     except:
         pass
     else:
@@ -5659,7 +5659,7 @@ def testM44x (Mat, Vec):
 
     assert m / 2 == Mat(2)
     try:
-        4 / m              # This should raise an exception.
+        4 / m                   # This should raise an exception.
     except:
         pass
     else:
@@ -5726,7 +5726,7 @@ def testM44x (Mat, Vec):
     except:
         pass
     else:
-        assert 0                # We shouldn't get here.
+        assert 0                   # We shouldn't get here.
 
     # Shearing.
 
@@ -5758,21 +5758,21 @@ def testM44x (Mat, Vec):
     # occur.  Instead, these tests merely document the way the Python
     # wrappings currently work.
     try:
-        m.setShear(1, 2, 3)     # This should raise an exception.
+        m.setShear(1, 2, 3)        # This should raise an exception.
     except:
         pass
     else:
-        assert 0                # We shouldn't get here.
+        assert 0                   # We shouldn't get here.
 
     # It is not essential for correctness that the following exceptions
     # occur.  Instead, these tests merely document the way the Python
     # wrappings currently work.
     try:
-        m.shear(1, 2, 3, 4, 5, 6)       # This should raise an exception.
+        m.shear(1, 2, 3, 4, 5, 6)        # This should raise an exception.
     except:
         pass
     else:
-        assert 0                # We shouldn't get here.
+        assert 0                   # We shouldn't get here.
 
     # Translation.
 
@@ -6258,7 +6258,7 @@ def testM33xM44xConversion (MatA, MatB):
 
     try:
         m = MatA();
-        m1 = MatB (m);     # This should raise an exception.
+        m1 = MatB (m);           # This should raise an exception.
     except:
         pass
     else:
@@ -6527,7 +6527,7 @@ def testBox2Box3Conversion (Box1, Box2):
 
     try:
         b = Box1();
-        b1 = Box2 (b);     # This should raise an exception.
+        b1 = Box2 (b);           # This should raise an exception.
     except:
         pass
     else:
@@ -6827,8 +6827,8 @@ def testEulerx (Euler, Vec, M33, M44):
 
     assert v.equalWithAbsError (Vec (0, 0, pi/2), v.baseTypeEpsilon())
 
-    m = M44 (( 0, 2, 0, 0),     # 90-degree rotation around Z
-             (-2, 0, 0, 0),     # scale by factor 2
+    m = M44 (( 0, 2, 0, 0),        # 90-degree rotation around Z
+             (-2, 0, 0, 0),        # scale by factor 2
              ( 0, 0, 2, 0),
              ( 0, 0, 0, 1))
 
@@ -7022,7 +7022,7 @@ def testLine3x (Line, Vec, Mat):
     assert l.pos() == Vec (0, 0, 0) and l.dir() == Vec (0, 1, 0)
 
     try:
-        l = m * l       # should raise TypeError
+        l = m * l        # should raise TypeError
     except TypeError:
         pass
     else:
@@ -7144,7 +7144,7 @@ def testPlane3x (Plane, Vec, Mat, Line):
     assert equal (p.distance(), 4, Vec().baseTypeEpsilon())
 
     try:
-        p = m * p       # should raise TypeError
+        p = m * p        # should raise TypeError
     except TypeError:
         pass
     else:
@@ -7237,7 +7237,7 @@ def testColor3x (Color, maxComp):
     assert v[0] == 10 and v[1] == 11 and v[2] == 12
 
     try:
-        v[-4] = 0          # This should raise an exception.
+        v[-4] = 0           # This should raise an exception.
     except:
         pass
     else:
@@ -7251,7 +7251,7 @@ def testColor3x (Color, maxComp):
         assert 0           # We shouldn't get here.
 
     try:
-        v[1] = "a"         # This should raise an exception.
+        v[1] = "a"           # This should raise an exception.
     except:
         pass
     else:
@@ -7411,7 +7411,7 @@ def testColor4x (Color, maxComp):
     assert v[0] == 10 and v[1] == 11 and v[2] == 12 and v[3] == 13
 
     try:
-        v[-5] = 0          # This should raise an exception.
+        v[-5] = 0           # This should raise an exception.
     except:
         pass
     else:
@@ -7425,7 +7425,7 @@ def testColor4x (Color, maxComp):
         assert 0           # We shouldn't get here.
 
     try:
-        v[1] = "a"         # This should raise an exception.
+        v[1] = "a"           # This should raise an exception.
     except:
         pass
     else:
@@ -7946,21 +7946,21 @@ def testC4xArray(Array, Color, Arrayx):
     except:
         pass
     else:
-        assert 0         # We shouldn't get here.   
+        assert 0            # We shouldn't get here.   
 
     try:
         a[3] = Color(0)   # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     try:
-        a[1] = "a"      # This should raise an exception.
+        a[1] = "a"         # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     # Assignment.
 
@@ -8024,15 +8024,16 @@ def testFpExceptions():
     # Platform/PlatformFpu.cpp and note the non-implementation of 
     # setFpExceptions().
     #
+    if True:
     #if sys.platform != 'win32' and sys.platform != 'darwin':
-    #    try:
-    #        v = V3d (1e200, 1e200, 1e200)
-    #        v = v * v * v
-    #        print v
-    #    except iex.MathExc:
-    #        pass
-    #    else:
-    #        assert 0
+       try:
+           v = V3d (1e200, 1e200, 1e200)
+           v = v * v * v
+           print v
+       except iex.MathExc:
+           pass
+       else:
+           assert 0
 
     try:
         f = sqrt (-1)
@@ -8332,21 +8333,21 @@ def testMxArray(Array, Matrix):
     except:
         pass
     else:
-        assert 0         # We shouldn't get here.   
+        assert 0            # We shouldn't get here.   
 
     try:
         a[3] = Matrix(0)   # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     try:
-        a[1] = "a"      # This should raise an exception.
+        a[1] = "a"         # This should raise an exception.
     except:
         pass
     else:
-        assert 0        # We shouldn't get here.
+        assert 0           # We shouldn't get here.
 
     # Assignment.
 

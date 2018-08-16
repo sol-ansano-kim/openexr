@@ -35,6 +35,8 @@
 
 #include <Python.h>
 #include <boost/python.hpp>
+// #include <boost/python/make_constructor.hpp>
+// #include <boost/format.hpp>
 #include <PyImathAll.h>
 #if defined(PYILMBASE_USE_STATIC_BOOST_PYTHON) && defined(PYILMBASE_STATICLIBS)
 #include <PyIexAll.h>

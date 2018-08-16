@@ -38,10 +38,10 @@
 #include <Python.h>
 #include <ImathVec.h>
 #include <ImathQuat.h>
-#include <PyImathFixedArray.h>
-#include <PyImathFixedMatrix.h>
-#include <PyImathFixedArray2D.h>
-#include <PyImathFixedVArray.h>
+#include "PyImathFixedArray.h"
+#include "PyImathFixedMatrix.h"
+#include "PyImathFixedArray2D.h"
+#include "PyImathFixedVArray.h"
 
 namespace PyImath {
 
