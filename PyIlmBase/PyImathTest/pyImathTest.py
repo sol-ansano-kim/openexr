@@ -8024,8 +8024,7 @@ def testFpExceptions():
     # Platform/PlatformFpu.cpp and note the non-implementation of 
     # setFpExceptions().
     #
-    if True:
-    #if sys.platform != 'win32' and sys.platform != 'darwin':
+    if sys.platform != 'win32' and sys.platform != 'darwin':
        try:
            v = V3d (1e200, 1e200, 1e200)
            v = v * v * v
