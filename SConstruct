@@ -781,7 +781,7 @@ prjs.append({"name": PyIexName(False),
              "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": ["PYIEX_EXPORTS"] + py_defs,
+             "defs": ["OPENEXR_DLL", "PYIEX_BUILD"] + py_defs,
              "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": pyiex_srcs,
@@ -815,7 +815,7 @@ prjs.append({"name": PyImathName(False),
              "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": ["PYIMATH_EXPORTS"] + py_defs,
+             "defs": ["OPENEXR_DLL", "PYIMATH_BUILD"] + py_defs,
              "cppflags": nowarn_flags,
              "incdirs": [out_headers_dir],
              "srcs": pyimath_srcs,
@@ -1116,12 +1116,13 @@ env.Alias("ilmbase", ["ilmbase-static", "ilmbase-shared"])
 
 env.Alias("openexr-tools", [tgts[y] for y in filter(lambda x: x.startswith("exr"), tgts.keys())])
 
-env.Alias("ilmbase-python", [tgts["PyIex-static"],
-                             tgts["PyIex-shared"],
-                             tgts["PyImath-static"],
-                             tgts["PyImath-shared"],
-                             tgts[iexmodulename],
-                             tgts[imathmodulename]])
+pytgts = []
+if pyilmbase_static:
+  pytgts.extend([tgts["PyIex-static"], tgts["PyImath-static"]])
+else:
+  pytgts.extend([tgts["PyIex-shared"], tgts["PyImath-shared"]])
+pytgts.extend([iexmodulename, imathmodulename])
+env.Alias("ilmbase-python", pytgts)
 
 env.Alias("openexr", ["openexr-static", "openexr-shared", "ilmbase-python", "openexr-tools"])
 
