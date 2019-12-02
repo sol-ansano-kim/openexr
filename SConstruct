@@ -267,7 +267,7 @@ GenerateOpenEXRConfig("%s/OpenEXRConfig.h" % out_headers_dir)
 half_headers = env.Install(out_headers_dir, ["IlmBase/Half/half.h",
                                              "IlmBase/Half/halfExport.h",
                                              "IlmBase/Half/halfFunction.h",
-                                             "IlmBase/Half/halfLimits.h"])
+                                             "IlmBase/Half/halfLimits.h"] + eluth + tofloath)
 
 iex_headers = env.Install(out_headers_dir, excons.glob("IlmBase/Iex/*.h"))
 
@@ -298,7 +298,7 @@ def ilmimf_filter(x):
    name = os.path.splitext(os.path.basename(x))[0]
    return (name not in ["b44ExpLogTable", "dwaLookups"])
 
-ilmimf_headers = env.Install(out_headers_dir, filter(ilmimf_filter, excons.glob("OpenEXR/IlmImf/*.h")))
+ilmimf_headers = env.Install(out_headers_dir, filter(ilmimf_filter, excons.glob("OpenEXR/IlmImf/*.h")) + b44h + dwah)
 
 ilmimf_srcs = filter(ilmimf_filter, excons.glob("OpenEXR/IlmImf/*.cpp"))
 
