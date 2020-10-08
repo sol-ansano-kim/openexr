@@ -15,9 +15,9 @@ ARGUMENTS["use-c++11"] = "1"
 env = excons.MakeBaseEnv()
 
 
-lib_version = (2, 2, 0)
+lib_version = (2, 3, 0)
 lib_version_str = "%d.%d.%d" % lib_version
-lib_suffix = excons.GetArgument("openexr-suffix", "-2_2")
+lib_suffix = excons.GetArgument("openexr-suffix", "-%d_%d" % (lib_version[0], lib_version[1]))
 #static_lib_suffix = lib_suffix + excons.GetArgument("openexr-static-suffix", "_s")
 namespace_version = (excons.GetArgument("openexr-namespace-version", 1, int) != 0)
 zlib_win_api = (excons.GetArgument("openexr-zlib-winapi", 0, int) != 0)
@@ -267,7 +267,7 @@ GenerateOpenEXRConfig("%s/OpenEXRConfig.h" % out_headers_dir)
 half_headers = env.Install(out_headers_dir, ["IlmBase/Half/half.h",
                                              "IlmBase/Half/halfExport.h",
                                              "IlmBase/Half/halfFunction.h",
-                                             "IlmBase/Half/halfLimits.h"])
+                                             "IlmBase/Half/halfLimits.h"] + eluth + tofloath)
 
 iex_headers = env.Install(out_headers_dir, excons.glob("IlmBase/Iex/*.h"))
 
@@ -298,7 +298,7 @@ def ilmimf_filter(x):
    name = os.path.splitext(os.path.basename(x))[0]
    return (name not in ["b44ExpLogTable", "dwaLookups"])
 
-ilmimf_headers = env.Install(out_headers_dir, filter(ilmimf_filter, excons.glob("OpenEXR/IlmImf/*.h")))
+ilmimf_headers = env.Install(out_headers_dir, filter(ilmimf_filter, excons.glob("OpenEXR/IlmImf/*.h")) + b44h + dwah)
 
 ilmimf_srcs = filter(ilmimf_filter, excons.glob("OpenEXR/IlmImf/*.cpp"))
 
@@ -781,7 +781,7 @@ prjs.append({"name": PyIexName(False),
              "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": ["PYIEX_EXPORTS"] + py_defs,
+             "defs": ["OPENEXR_DLL", "PYIEX_BUILD"] + py_defs,
              "cppflags": nowarn_flags,
              "incdirs": ilmbase_incdirs + openexr_incdirs + configs_incdirs,
              "srcs": pyiex_srcs,
@@ -815,7 +815,7 @@ prjs.append({"name": PyImathName(False),
              "win_separate_dll_and_lib": False,
              "prefix": "python/" + python.Version(),
              "bldprefix": "python" + python.Version(),
-             "defs": ["PYIMATH_EXPORTS"] + py_defs,
+             "defs": ["OPENEXR_DLL", "PYIMATH_BUILD"] + py_defs,
              "cppflags": nowarn_flags,
              "incdirs": [out_headers_dir],
              "srcs": pyimath_srcs,
@@ -1116,12 +1116,13 @@ env.Alias("ilmbase", ["ilmbase-static", "ilmbase-shared"])
 
 env.Alias("openexr-tools", [tgts[y] for y in filter(lambda x: x.startswith("exr"), tgts.keys())])
 
-env.Alias("ilmbase-python", [tgts["PyIex-static"],
-                             tgts["PyIex-shared"],
-                             tgts["PyImath-static"],
-                             tgts["PyImath-shared"],
-                             tgts[iexmodulename],
-                             tgts[imathmodulename]])
+pytgts = []
+if pyilmbase_static:
+  pytgts.extend([tgts["PyIex-static"], tgts["PyImath-static"]])
+else:
+  pytgts.extend([tgts["PyIex-shared"], tgts["PyImath-shared"]])
+pytgts.extend([iexmodulename, imathmodulename])
+env.Alias("ilmbase-python", pytgts)
 
 env.Alias("openexr", ["openexr-static", "openexr-shared", "ilmbase-python", "openexr-tools"])
 

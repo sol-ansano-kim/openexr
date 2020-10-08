@@ -50,21 +50,6 @@
 #include <exception>
 #include <sstream>
 
-//----------------------------------------------------------
-//
-//	C++11 deprecates the specification of dynamic exception throw and
-//	then changes this again in C++17. for convenience, put a macro
-//	here to enable existing places to specify the exception list, and
-//	have it done so appropriately based on the language features
-//	active.
-//
-//----------------------------------------------------------
-#ifdef ILMBASE_FORCE_CXX03
-#   define IEX_THROW_SPEC(...) throw (__VA_ARGS__)
-#else
-#   define IEX_THROW_SPEC(...)
-#endif
-
 IEX_INTERNAL_NAMESPACE_HEADER_ENTER
 
 
@@ -72,7 +57,7 @@ IEX_INTERNAL_NAMESPACE_HEADER_ENTER
 // Our most basic exception class
 //-------------------------------
 
-class BaseExc: public std::string, public std::exception
+class BaseExc: public std::exception
 {
   public:
 
@@ -87,9 +72,9 @@ class BaseExc: public std::string, public std::exception
     IEX_EXPORT BaseExc (const BaseExc &be) throw();
     IEX_EXPORT virtual ~BaseExc () throw ();
 
-    //--------------------------------------------
-    // what() method -- e.what() returns e.c_str()
-    //--------------------------------------------
+    //---------------------------------------------------
+    // what() method -- e.what() returns _message.c_str()
+    //---------------------------------------------------
 
     IEX_EXPORT virtual const char * what () const throw ();
 
@@ -116,6 +101,11 @@ class BaseExc: public std::string, public std::exception
     IEX_EXPORT BaseExc &            append (const char *s);
     IEX_EXPORT BaseExc &            operator += (const char *s);
 
+    //---------------------------------------------------
+    // Access to the string representation of the message
+    //---------------------------------------------------
+
+    IEX_EXPORT const std::string &  message () const;
 
     //--------------------------------------------------
     // Stack trace for the point at which the exception
@@ -128,6 +118,7 @@ class BaseExc: public std::string, public std::exception
 
   private:
 
+    std::string                     _message;
     std::string                     _stackTrace;
 };
 
@@ -217,61 +208,6 @@ typedef std::string (* StackTracer) ();
 
 IEX_EXPORT void        setStackTracer (StackTracer stackTracer);
 IEX_EXPORT StackTracer stackTracer ();
-
-
-//-----------------
-// Inline functions
-//-----------------
-
-inline BaseExc &
-BaseExc::operator = (std::stringstream &s)
-{
-    return assign (s);
-}
-
-
-inline BaseExc &
-BaseExc::operator += (std::stringstream &s)
-{
-    return append (s);
-}
-
-
-inline BaseExc &
-BaseExc::assign (const char *s)
-{
-    std::string::assign(s);
-    return *this;
-}
-
-
-inline BaseExc &
-BaseExc::operator = (const char *s)
-{
-    return assign(s);
-}
-
-
-inline BaseExc &
-BaseExc::append (const char *s)
-{
-    std::string::append(s);
-    return *this;
-}
-
-
-inline BaseExc &
-BaseExc::operator += (const char *s)
-{
-    return append(s);
-}
-
-
-inline const std::string &
-BaseExc::stackTrace () const
-{
-    return _stackTrace;
-}
 
 
 IEX_INTERNAL_NAMESPACE_HEADER_EXIT

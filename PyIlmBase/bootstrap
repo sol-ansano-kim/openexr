@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 # If we're on OS X, use glibtoolize instead of toolize when available
 HOSTTYPE=`uname`
 if [ "$HOSTTYPE" == "Darwin" ] && $(which glibtoolize > /dev/null 2>&1) ; then
@@ -52,9 +52,9 @@ if [ -d /usr/local/share/aclocal ]; then
 	ACLOCAL_INCLUDE="$ACLOCAL_INCLUDE -I /usr/local/share/aclocal"
 fi	
 
-run_cmd aclocal -I m4 -I ../IlmBase/m4 $ACLOCAL_INCLUDE
+run_cmd aclocal -I m4 $ACLOCAL_INCLUDE
 run_cmd $LIBTOOLIZE --automake --copy
-run_cmd automake --add-missing --copy
+run_cmd automake --add-missing --copy --foreign
 run_cmd autoconf
 echo
 echo "Now type './configure' to configure PyIlmBase."

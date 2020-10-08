@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(PyIlmBase, 2.2.0)
-AC_SUBST(PYILMBASE_VERSION, 2.2.0)
+AC_INIT(PyIlmBase, 2.3.0)
+AC_SUBST(PYILMBASE_VERSION, 2.3.0)
 AC_CANONICAL_HOST
 AC_CONFIG_SRCDIR(PyIex/iexmodule.cpp)
 AC_CONFIG_HEADER(config/PyIlmBaseConfig.h)
@@ -10,7 +10,7 @@ dnl static python modules make no sense - disable static
 AC_DISABLE_STATIC
 
 
-LIBTOOL_CURRENT=2
+LIBTOOL_CURRENT=24
 LIBTOOL_REVISION=2
 LIBTOOL_AGE=0
 LIBTOOL_VERSION=$LIBTOOL_CURRENT:$LIBTOOL_REVISION:$LIBTOOL_AGE
@@ -52,7 +52,6 @@ else
       CXXFLAGS="$CXXFLAGS -std=c++11"
     else
       if test "${cxxstd}" == 03 ; then
-        AC_DEFINE(ILMBASE_FORCE_CXX03)
         CXXFLAGS="$CXXFLAGS -std=c++03"
       else
         dnl automatically determine...
@@ -112,8 +111,7 @@ AM_PATH_PYTHON
 PYTHON_INC_DIR=`$PYTHON -c 'from distutils.sysconfig import *; print (get_python_inc())'`
 PYTHON_LIB_DIR=`$PYTHON -c 'from distutils.sysconfig import *; print (get_config_var("LIBDIR"))'`
 PYTHON_VER_MAJ=`echo $PYTHON_VERSION|cut -d. -f1`
-PKG_CHECK_MODULES(PYTHON, [python${PYTHON_VER_MAJ}])
-LIBS="$LIBS $PYTHON_LIBS"
+LIBS="$LIBS -lpython$PYTHON_VERSION"
 
 BOOST_PYTHON_CXXFLAGS="" 
 BOOST_PYTHON_LDFLAGS="" 
@@ -226,6 +224,8 @@ PyImath/Makefile
 PyImathTest/Makefile
 PyImathTest/pyImathTest
 PyImathNumpy/Makefile
+PyImathNumpyTest/Makefile
+PyImathNumpyTest/pyImathNumpyTest
 ])
 
 AC_OUTPUT
