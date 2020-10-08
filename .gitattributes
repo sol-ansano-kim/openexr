@@ -61,6 +61,8 @@
 *.suo          text eol=crlf
 *.vcxproj*     text eol=crlf
 *.csproj       text eol=crlf
+*.vcproj       text eol=crlf
+*.rc           text eol=crlf
 
 # Build system files
 SConstruct     text eol=lf
@@ -76,4 +78,7 @@ CMakeLists.txt text eol=lf
 *.desc         text eol=lf
 *.txt          text eol=lf
 LICENSE        text eol=lf
+
+OpenEXR_Viewers/README.win32 text eol=crlf
+
 
